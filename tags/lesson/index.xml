@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Lesson on Arthur Cruz</title>
-        <link>https://arthcruz.dev/tags/lesson/</link>
+        <link>http://localhost:1313/tags/lesson/</link>
         <description>Recent content in Lesson on Arthur Cruz</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/tags/lesson/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sun, 31 Jul 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/lesson/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Hello World</title>
-        <link>https://arthcruz.dev/posts/hello-world-3/</link>
+        <link>http://localhost:1313/posts/hello-world-3/</link>
         <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/posts/hello-world-3/</guid>
-        <description>&lt;img src="https://arthcruz.dev/posts/hello-world-3/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Hello World" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
+        <guid>http://localhost:1313/posts/hello-world-3/</guid>
+        <description>&lt;img src="http://localhost:1313/posts/hello-world-3/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Hello World" /&gt;&lt;h2 id=&#34;introduction&#34;&gt;Introduction
 &lt;/h2&gt;&lt;p&gt;This is the content of my awesome post.&lt;/p&gt;
 &lt;h2 id=&#34;hello-world-example-in-javascript&#34;&gt;Hello World example in JavaScript
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-js&#34; data-lang=&#34;js&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Hello, world!&amp;#39;&lt;/span&gt;)
