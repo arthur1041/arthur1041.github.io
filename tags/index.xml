@@ -2,32 +2,32 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Tags on Arthur Cruz</title>
-        <link>http://localhost:1313/tags/</link>
+        <link>https://arthcruz.dev/tags/</link>
         <description>Recent content in Tags on Arthur Cruz</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en-us</language>
-        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/tags/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Tutorial</title>
-        <link>http://localhost:1313/tags/tutorial/</link>
+        <link>https://arthcruz.dev/tags/tutorial/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/tags/tutorial/</guid>
+        <guid>https://arthcruz.dev/tags/tutorial/</guid>
         <description></description>
         </item>
         <item>
         <title>News</title>
-        <link>http://localhost:1313/tags/news/</link>
+        <link>https://arthcruz.dev/tags/news/</link>
         <pubDate>Mon, 31 Jul 2023 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/tags/news/</guid>
+        <guid>https://arthcruz.dev/tags/news/</guid>
         <description></description>
         </item>
         <item>
         <title>Lesson</title>
-        <link>http://localhost:1313/tags/lesson/</link>
+        <link>https://arthcruz.dev/tags/lesson/</link>
         <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/tags/lesson/</guid>
+        <guid>https://arthcruz.dev/tags/lesson/</guid>
         <description></description>
         </item>
         
