@@ -2,40 +2,40 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Categories on Arthur Cruz</title>
-        <link>https://arthcruz.dev/en/categories/</link>
+        <link>/en/categories/</link>
         <description>Recent content in Categories on Arthur Cruz</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/en/categories/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="/en/categories/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Basics</title>
-        <link>https://arthcruz.dev/en/categories/basics/</link>
+        <link>/en/categories/basics/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/en/categories/basics/</guid>
+        <guid>/en/categories/basics/</guid>
         <description></description>
         </item>
         <item>
         <title>Javascript</title>
-        <link>https://arthcruz.dev/en/categories/javascript/</link>
+        <link>/en/categories/javascript/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/en/categories/javascript/</guid>
+        <guid>/en/categories/javascript/</guid>
         <description></description>
         </item>
         <item>
         <title>Java</title>
-        <link>https://arthcruz.dev/en/categories/java/</link>
+        <link>/en/categories/java/</link>
         <pubDate>Mon, 31 Jul 2023 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/en/categories/java/</guid>
+        <guid>/en/categories/java/</guid>
         <description></description>
         </item>
         <item>
         <title>Python</title>
-        <link>https://arthcruz.dev/en/categories/python/</link>
+        <link>/en/categories/python/</link>
         <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/en/categories/python/</guid>
+        <guid>/en/categories/python/</guid>
         <description></description>
         </item>
         

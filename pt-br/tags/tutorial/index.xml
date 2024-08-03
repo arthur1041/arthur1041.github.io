@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Tutorial on Arthur Cruz</title>
-        <link>https://arthcruz.dev/pt-br/tags/tutorial/</link>
+        <link>/pt-br/tags/tutorial/</link>
         <description>Recent content in Tutorial on Arthur Cruz</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>pt-br</language>
-        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/pt-br/tags/tutorial/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="/pt-br/tags/tutorial/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Olá Mundo</title>
-        <link>https://arthcruz.dev/pt-br/posts/hello-world-2/</link>
+        <link>/pt-br/posts/hello-world-2/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/pt-br/posts/hello-world-2/</guid>
-        <description>&lt;img src="https://arthcruz.dev/en/posts/hello-world-2/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Olá Mundo" /&gt;&lt;h2 id=&#34;introdução&#34;&gt;Introdução
+        <guid>/pt-br/posts/hello-world-2/</guid>
+        <description>&lt;img src="/pt-br/posts/hello-world-2/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Olá Mundo" /&gt;&lt;h2 id=&#34;introdução&#34;&gt;Introdução
 &lt;/h2&gt;&lt;p&gt;Este é o conteúdo da minha postagem incrível.&lt;/p&gt;
 &lt;h2 id=&#34;exemplo-de-olá-mundo-em-javascript&#34;&gt;Exemplo de Olá Mundo em JavaScript
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-js&#34; data-lang=&#34;js&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Hello, world!&amp;#39;&lt;/span&gt;)
@@ -26,11 +26,11 @@
         </item>
         <item>
         <title>Olá Mundo</title>
-        <link>https://arthcruz.dev/pt-br/posts/hello-world-3/</link>
+        <link>/pt-br/posts/hello-world-3/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/pt-br/posts/hello-world-3/</guid>
-        <description>&lt;img src="https://arthcruz.dev/en/posts/hello-world-3/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Olá Mundo" /&gt;&lt;h2 id=&#34;introdução&#34;&gt;Introdução
+        <guid>/pt-br/posts/hello-world-3/</guid>
+        <description>&lt;img src="/pt-br/posts/hello-world-3/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Olá Mundo" /&gt;&lt;h2 id=&#34;introdução&#34;&gt;Introdução
 &lt;/h2&gt;&lt;p&gt;Este é o conteúdo da minha postagem incrível.&lt;/p&gt;
 &lt;h2 id=&#34;exemplo-de-olá-mundo-em-javascript&#34;&gt;Exemplo de Olá Mundo em JavaScript
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-js&#34; data-lang=&#34;js&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Hello, world!&amp;#39;&lt;/span&gt;)
@@ -44,11 +44,11 @@
         </item>
         <item>
         <title>Olá Mundo</title>
-        <link>https://arthcruz.dev/pt-br/posts/hello-world/</link>
+        <link>/pt-br/posts/hello-world/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
         
-        <guid>https://arthcruz.dev/pt-br/posts/hello-world/</guid>
-        <description>&lt;img src="https://arthcruz.dev/en/posts/hello-world/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Olá Mundo" /&gt;&lt;h2 id=&#34;introdução&#34;&gt;Introdução
+        <guid>/pt-br/posts/hello-world/</guid>
+        <description>&lt;img src="/pt-br/posts/hello-world/images/Hello-World-Wallpaper.jpg" alt="Featured image of post Olá Mundo" /&gt;&lt;h2 id=&#34;introdução&#34;&gt;Introdução
 &lt;/h2&gt;&lt;p&gt;Este é o conteúdo da minha postagem incrível.&lt;/p&gt;
 &lt;h2 id=&#34;exemplo-de-olá-mundo-em-javascript&#34;&gt;Exemplo de Olá Mundo em JavaScript
 &lt;/h2&gt;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-js&#34; data-lang=&#34;js&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;console&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;log&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Hello, world!&amp;#39;&lt;/span&gt;)

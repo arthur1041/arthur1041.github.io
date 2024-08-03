@@ -2,202 +2,202 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://arthcruz.dev/en/</loc>
+    <loc>/en/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/"
+                href="/pt-br/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/"
+                href="/en/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/categories/basics/</loc>
+    <loc>/en/categories/basics/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/basics/"
+                href="/pt-br/categories/basics/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/categories/basics/"
+                href="/en/categories/basics/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/categories/</loc>
+    <loc>/en/categories/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/"
+                href="/pt-br/categories/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/categories/"
+                href="/en/categories/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/posts/hello-world/</loc>
+    <loc>/en/posts/hello-world/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/posts/hello-world/"
+                href="/pt-br/posts/hello-world/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/posts/hello-world/"
+                href="/en/posts/hello-world/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/categories/javascript/</loc>
+    <loc>/en/categories/javascript/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/javascript/"
+                href="/pt-br/categories/javascript/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/categories/javascript/"
+                href="/en/categories/javascript/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/posts/</loc>
+    <loc>/en/posts/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/posts/"
+                href="/pt-br/posts/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/posts/"
+                href="/en/posts/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/tags/</loc>
+    <loc>/en/tags/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/tags/"
+                href="/pt-br/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/tags/"
+                href="/en/tags/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/tags/tutorial/</loc>
+    <loc>/en/tags/tutorial/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/tags/tutorial/"
+                href="/pt-br/tags/tutorial/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/tags/tutorial/"
+                href="/en/tags/tutorial/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/posts/hello-world-2/</loc>
+    <loc>/en/posts/hello-world-2/</loc>
     <lastmod>2023-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/posts/hello-world-2/"
+                href="/pt-br/posts/hello-world-2/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/posts/hello-world-2/"
+                href="/en/posts/hello-world-2/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/categories/java/</loc>
+    <loc>/en/categories/java/</loc>
     <lastmod>2023-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/java/"
+                href="/pt-br/categories/java/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/categories/java/"
+                href="/en/categories/java/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/tags/news/</loc>
+    <loc>/en/tags/news/</loc>
     <lastmod>2023-07-31T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://arthcruz.dev/en/posts/hello-world-3/</loc>
+    <loc>/en/posts/hello-world-3/</loc>
     <lastmod>2022-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/posts/hello-world-3/"
+                href="/pt-br/posts/hello-world-3/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/posts/hello-world-3/"
+                href="/en/posts/hello-world-3/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/tags/lesson/</loc>
+    <loc>/en/tags/lesson/</loc>
     <lastmod>2022-07-31T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://arthcruz.dev/en/categories/python/</loc>
+    <loc>/en/categories/python/</loc>
     <lastmod>2022-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/python/"
+                href="/pt-br/categories/python/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/categories/python/"
+                href="/en/categories/python/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/archives/</loc>
+    <loc>/en/archives/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/archives/"
+                href="/pt-br/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/archives/"
+                href="/en/archives/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/links/</loc>
+    <loc>/en/links/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/links/"
+                href="/pt-br/links/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/links/"
+                href="/en/links/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/en/search/</loc>
+    <loc>/en/search/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/search/"
+                href="/pt-br/search/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://arthcruz.dev/en/search/"
+                href="/en/search/"
                 />
   </url>
 </urlset>
