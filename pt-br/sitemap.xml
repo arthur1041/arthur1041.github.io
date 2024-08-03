@@ -41,19 +41,6 @@
                 href="https://arthcruz.dev/pt-br/categories/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/pt-br/categories/java/</loc>
-    <lastmod>2024-07-31T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://arthcruz.dev/en/categories/java/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/java/"
-                />
-  </url><url>
     <loc>https://arthcruz.dev/pt-br/categories/javascript/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -65,32 +52,6 @@
                 rel="alternate"
                 hreflang="pt-br"
                 href="https://arthcruz.dev/pt-br/categories/javascript/"
-                />
-  </url><url>
-    <loc>https://arthcruz.dev/pt-br/posts/hello-world-2/</loc>
-    <lastmod>2024-07-31T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://arthcruz.dev/en/posts/hello-world-2/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/posts/hello-world-2/"
-                />
-  </url><url>
-    <loc>https://arthcruz.dev/pt-br/posts/hello-world-3/</loc>
-    <lastmod>2024-07-31T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://arthcruz.dev/en/posts/hello-world-3/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/posts/hello-world-3/"
                 />
   </url><url>
     <loc>https://arthcruz.dev/pt-br/posts/hello-world/</loc>
@@ -119,19 +80,6 @@
                 href="https://arthcruz.dev/pt-br/posts/"
                 />
   </url><url>
-    <loc>https://arthcruz.dev/pt-br/categories/python/</loc>
-    <lastmod>2024-07-31T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://arthcruz.dev/en/categories/python/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/python/"
-                />
-  </url><url>
     <loc>https://arthcruz.dev/pt-br/tags/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -156,6 +104,58 @@
                 rel="alternate"
                 hreflang="pt-br"
                 href="https://arthcruz.dev/pt-br/tags/tutorial/"
+                />
+  </url><url>
+    <loc>https://arthcruz.dev/pt-br/categories/java/</loc>
+    <lastmod>2023-07-31T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://arthcruz.dev/en/categories/java/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="pt-br"
+                href="https://arthcruz.dev/pt-br/categories/java/"
+                />
+  </url><url>
+    <loc>https://arthcruz.dev/pt-br/posts/hello-world-2/</loc>
+    <lastmod>2023-07-31T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://arthcruz.dev/en/posts/hello-world-2/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="pt-br"
+                href="https://arthcruz.dev/pt-br/posts/hello-world-2/"
+                />
+  </url><url>
+    <loc>https://arthcruz.dev/pt-br/posts/hello-world-3/</loc>
+    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://arthcruz.dev/en/posts/hello-world-3/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="pt-br"
+                href="https://arthcruz.dev/pt-br/posts/hello-world-3/"
+                />
+  </url><url>
+    <loc>https://arthcruz.dev/pt-br/categories/python/</loc>
+    <lastmod>2022-07-31T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://arthcruz.dev/en/categories/python/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="pt-br"
+                href="https://arthcruz.dev/pt-br/categories/python/"
                 />
   </url><url>
     <loc>https://arthcruz.dev/pt-br/archives/</loc>

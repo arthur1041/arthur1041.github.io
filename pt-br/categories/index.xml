@@ -15,14 +15,6 @@
         <description></description>
         </item>
         <item>
-        <title>Java</title>
-        <link>https://arthcruz.dev/pt-br/categories/java/</link>
-        <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
-        
-        <guid>https://arthcruz.dev/pt-br/categories/java/</guid>
-        <description></description>
-        </item>
-        <item>
         <title>Javascript</title>
         <link>https://arthcruz.dev/pt-br/categories/javascript/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
@@ -31,9 +23,17 @@
         <description></description>
         </item>
         <item>
+        <title>Java</title>
+        <link>https://arthcruz.dev/pt-br/categories/java/</link>
+        <pubDate>Mon, 31 Jul 2023 00:00:00 +0000</pubDate>
+        
+        <guid>https://arthcruz.dev/pt-br/categories/java/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Python</title>
         <link>https://arthcruz.dev/pt-br/categories/python/</link>
-        <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
+        <pubDate>Sun, 31 Jul 2022 00:00:00 +0000</pubDate>
         
         <guid>https://arthcruz.dev/pt-br/categories/python/</guid>
         <description></description>
