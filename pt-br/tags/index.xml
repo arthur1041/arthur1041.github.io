@@ -2,16 +2,16 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Tags on Arthur Cruz</title>
-        <link>/pt-br/tags/</link>
+        <link>https://arthcruz.dev/pt-br/tags/</link>
         <description>Recent content in Tags on Arthur Cruz</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>pt-br</language>
-        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="/pt-br/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/pt-br/tags/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Tutorial</title>
-        <link>/pt-br/tags/tutorial/</link>
+        <link>https://arthcruz.dev/pt-br/tags/tutorial/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
         
-        <guid>/pt-br/tags/tutorial/</guid>
+        <guid>https://arthcruz.dev/pt-br/tags/tutorial/</guid>
         <description></description>
         </item>
         
