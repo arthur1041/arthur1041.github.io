@@ -22,7 +22,29 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;    System.&lt;span style=&#34;color:#a6e22e&#34;&gt;out&lt;/span&gt;.&lt;span style=&#34;color:#a6e22e&#34;&gt;println&lt;/span&gt;(&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Hello, world!&amp;#34;&lt;/span&gt;)
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;  }
 &lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;}
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;$x_1=x 0_1+\cos \left(\theta_1\right) \cdot \frac{a_1 t^2}{2}$&lt;/p&gt;
+&lt;p&gt;$x_2=x 0_2+\cos \left(\theta_2\right) \cdot \frac{a_2(t-\Delta t)^2}{2}$&lt;/p&gt;
+&lt;p&gt;$x 0_1+\cos \left(\theta_1\right) \cdot \frac{a_1 t^2}{2}=x 0_2+\cos \left(\theta_2\right) \cdot \frac{a_2(t-\Delta t)^2}{2}$&lt;/p&gt;
+&lt;p&gt;$0=x 0_2+\cos \left(\theta_2\right) \cdot \frac{a_2(t-\Delta t)^2}{2}-(x 0_1+\cos \left(\theta_1\right) \cdot \frac{a_1 t^2}{2})$&lt;/p&gt;
+&lt;h1 id=&#34;my-markdown-document&#34;&gt;My Markdown Document
+&lt;/h1&gt;&lt;p&gt;This is an example of a Markdown file with an embedded YouTube video.&lt;/p&gt;
+&lt;h2 id=&#34;introduction-1&#34;&gt;Introduction
+&lt;/h2&gt;&lt;p&gt;Markdown is a lightweight markup language with plain-text formatting syntax. Its design allows it to be converted to many output formats, but the original tool by the same name only supports HTML.&lt;/p&gt;
+&lt;h2 id=&#34;embedding-a-youtube-video&#34;&gt;Embedding a YouTube Video
+&lt;/h2&gt;&lt;p&gt;You can embed a YouTube video within a Markdown file by using HTML tags.&lt;/p&gt;
+&lt;p&gt;Here is an embedded YouTube video:&lt;/p&gt;
+&lt;div class=&#34;video-wrapper&#34;&gt;
+    &lt;iframe loading=&#34;lazy&#34; 
+            src=&#34;https://www.youtube.com/embed/dQw4w9WgXcQ&#34; 
+            allowfullscreen 
+            title=&#34;YouTube Video&#34;
+    &gt;
+    &lt;/iframe&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&#34;conclusion&#34;&gt;Conclusion
+&lt;/h2&gt;&lt;p&gt;As you can see, embedding a YouTube video in a Markdown file is straightforward by using the HTML &lt;code&gt;iframe&lt;/code&gt; tag.&lt;/p&gt;
+</description>
         </item>
         
     </channel>

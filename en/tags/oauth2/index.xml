@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Oauth2 on Arthur Cruz</title>
+        <link>http://localhost:1313/en/tags/oauth2/</link>
+        <description>Recent content in Oauth2 on Arthur Cruz</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <lastBuildDate>Sat, 03 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/en/tags/oauth2/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>What is OAuth 2.0 and How It Works</title>
+        <link>http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/</link>
+        <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/</guid>
+        <description>&lt;img src="http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth-post-wallpaper.jpg" alt="Featured image of post What is OAuth 2.0 and How It Works" /&gt;&lt;h2 id=&#34;what-is-oauth-20-and-how-it-works&#34;&gt;What is OAuth 2.0 and How It Works
+&lt;/h2&gt;&lt;h3 id=&#34;introduction&#34;&gt;Introduction
+&lt;/h3&gt;&lt;p&gt;Many applications require users to log in, especially to protect private resources. For example, your profiles on email services, online stores, or social media platforms contain personal information and sensitive data. These applications must ensure that only authorized individuals can access specific information or perform particular actions. Verifying user identity and controlling access to resources is crucial for maintaining security and privacy in any digital environment. This authentication process helps safeguard user data from unauthorized access and potential breaches.
+&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;how-can-it-be-done&#34;&gt;How Can it Be Done?
+&lt;/h3&gt;&lt;p&gt;To create a secure online environment for user sign-up and login, several essential steps and features must be implemented. These include:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Storing and retrieving user credentials securely&lt;/li&gt;
+&lt;li&gt;Implementing Two-Factor Authentication (2FA)&lt;/li&gt;
+&lt;li&gt;Applying password hashing and salting techniques&lt;/li&gt;
+&lt;li&gt;Providing secure password recovery mechanisms&lt;/li&gt;
+&lt;li&gt;Verifying user email addresses or phone numbers&lt;/li&gt;
+&lt;li&gt;Enforcing account lockout protocols after multiple failed login attempts&lt;/li&gt;
+&lt;li&gt;Keeping software and libraries updated with the latest security patches&lt;/li&gt;
+&lt;li&gt;Logging and monitoring login attempts for suspicious activity&lt;/li&gt;
+&lt;li&gt;And many additional functionalities&amp;hellip;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;As you can see, developing and integrating all these features can be a significant task, potentially requiring extensive time and resources, even with a dedicated team.&lt;/p&gt;
+&lt;p&gt;Fortunately, you can streamline this process by outsourcing these responsibilities to a third-party solution.
+&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;outsourcing-the-complex-stuff&#34;&gt;Outsourcing the Complex Stuff
+&lt;/h3&gt;&lt;p&gt;This is where OAuth 2 comes into play. OAuth 2 allows us to delegate all these responsibilities to &lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/List_of_OAuth_providers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Oauth providers&lt;/a&gt;. Prominent examples of these providers include Google, Keycloak, Microsoft, Facebook, and GitHub.&lt;/p&gt;
+&lt;p&gt;These providers are highly reliable, having undergone extensive testing and validation, making them dependable solutions for managing authentication and authorization.
+&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;diving-into-the-concept-of-oauth-20-what-it-really-is&#34;&gt;Diving Into the Concept of OAuth 2.0: What It Really Is
+&lt;/h3&gt;&lt;p&gt;OAuth 2.0, which stands for &amp;ldquo;Open Authorization,&amp;rdquo; is a standardized protocol developed to enable a website or application to access resources hosted by other web applications on behalf of a user. Introduced in 2012 as a successor to OAuth 1.0, OAuth 2.0 has since become the widely accepted standard for online authorization. This protocol facilitates consented access and imposes restrictions on what actions a client application can perform on resources on behalf of the user, all while ensuring that the user&amp;rsquo;s credentials remain confidential and are never shared.&lt;/p&gt;
+&lt;p&gt;Despite the web being the primary platform for OAuth 2.0, the specification also covers how to manage delegated access for a variety of other client types, including browser-based applications, server-side web applications, native or mobile apps, and connected devices.&lt;/p&gt;
+&lt;h4 id=&#34;-key-principles-of-oauth-20&#34;&gt;→ Key Principles of OAuth 2.0:
+&lt;/h4&gt;&lt;p&gt;OAuth 2.0 is &lt;strong&gt;an authorization protocol, not an authentication protocol&lt;/strong&gt;. It is designed primarily to grant access to resources, such as remote APIs or user data, rather than verifying a user&amp;rsquo;s identity.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;:  The difference between authentication and authorization is as follows: Authentication involves verifying the true identity of a user or entity, while authorization determines the access levels and permissions that a user or entity is granted within a system. In essence, authentication must occur before authorization, as verifying identity is a prerequisite for establishing the appropriate access rights.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;OAuth2.0 employs Access Tokens to manage this access. An Access Token is a data element that signifies the authorization to access resources on behalf of the end-user. While OAuth 2.0 does not prescribe a specific format for these tokens, the JSON Web Token (JWT) format is frequently used in practice. This format allows token issuers to embed information directly within the token. Additionally, for security purposes, Access Tokens can be assigned an expiration date to limit their validity.
+&lt;br&gt;&lt;/p&gt;
+&lt;h3 id=&#34;oauth-20-roles&#34;&gt;OAuth 2.0 Roles
+&lt;/h3&gt;&lt;p&gt;The OAuth 2.0 authorization process is defined by distinct roles. These roles play a fundamental part in how authorization is managed and executed, and the end-to-end logic of the process relies on them. &lt;strong&gt;They are a key concept for understanding how OAuth 2.0 functions..&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles.jpg&#34;
+	width=&#34;1920&#34;
+	height=&#34;1080&#34;
+	srcset=&#34;http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles_hu4ba72b5e5ecba5c4e5e96d0ca5f63064_286740_480x0_resize_q75_box.jpg 480w, http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles_hu4ba72b5e5ecba5c4e5e96d0ca5f63064_286740_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;177&#34;
+		data-flex-basis=&#34;426px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;Referencias:
+&lt;a class=&#34;link&#34; href=&#34;https://auth0.com/intro-to-iam/what-is-oauth-2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://auth0.com/intro-to-iam/what-is-oauth-2&lt;/a&gt;
+&lt;a class=&#34;link&#34; href=&#34;https://www.oauth.com/oauth2-servers/definitions/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.oauth.com/oauth2-servers/definitions/&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
