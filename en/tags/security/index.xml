@@ -2,19 +2,20 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
         <title>Security on Arthur Cruz</title>
-        <link>http://localhost:1313/en/tags/security/</link>
+        <link>https://arthcruz.dev/en/tags/security/</link>
         <description>Recent content in Security on Arthur Cruz</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <lastBuildDate>Sat, 03 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="http://localhost:1313/en/tags/security/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 03 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/en/tags/security/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>What is OAuth 2.0 and How It Works</title>
-        <link>http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/</link>
+        <link>https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/</link>
         <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
         
-        <guid>http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/</guid>
-        <description>&lt;img src="http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth-post-wallpaper.jpg" alt="Featured image of post What is OAuth 2.0 and How It Works" /&gt;&lt;h2 id=&#34;what-is-oauth-20-and-how-it-works&#34;&gt;What is OAuth 2.0 and How It Works
+        <guid>https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/</guid>
+        <description>&lt;img src="https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth-post-wallpaper.jpg" alt="Featured image of post What is OAuth 2.0 and How It Works" /&gt;&lt;h2 id=&#34;what-is-oauth-20-and-how-it-works&#34;&gt;What is OAuth 2.0 and How It Works
 &lt;/h2&gt;&lt;h3 id=&#34;introduction&#34;&gt;Introduction
 &lt;/h3&gt;&lt;p&gt;Many applications require users to log in, especially to protect private resources. For example, your profiles on email services, online stores, or social media platforms contain personal information and sensitive data. These applications must ensure that only authorized individuals can access specific information or perform particular actions. Verifying user identity and controlling access to resources is crucial for maintaining security and privacy in any digital environment. This authentication process helps safeguard user data from unauthorized access and potential breaches.
+&lt;br&gt;
 &lt;br&gt;&lt;/p&gt;
 &lt;h3 id=&#34;how-can-it-be-done&#34;&gt;How Can it Be Done?
 &lt;/h3&gt;&lt;p&gt;To create a secure online environment for user sign-up and login, several essential steps and features must be implemented. These include:&lt;/p&gt;
@@ -31,11 +32,13 @@
 &lt;/ul&gt;
 &lt;p&gt;As you can see, developing and integrating all these features can be a significant task, potentially requiring extensive time and resources, even with a dedicated team.&lt;/p&gt;
 &lt;p&gt;Fortunately, you can streamline this process by outsourcing these responsibilities to a third-party solution.
+&lt;br&gt;
 &lt;br&gt;&lt;/p&gt;
 &lt;h3 id=&#34;outsourcing-the-complex-stuff&#34;&gt;Outsourcing the Complex Stuff
 &lt;/h3&gt;&lt;p&gt;This is where OAuth 2 comes into play. OAuth 2 allows us to delegate all these responsibilities to &lt;a class=&#34;link&#34; href=&#34;https://en.wikipedia.org/wiki/List_of_OAuth_providers&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;Oauth providers&lt;/a&gt;. Prominent examples of these providers include Google, Keycloak, Microsoft, Facebook, and GitHub.&lt;/p&gt;
 &lt;p&gt;These providers are highly reliable, having undergone extensive testing and validation, making them dependable solutions for managing authentication and authorization.
+&lt;br&gt;
 &lt;br&gt;&lt;/p&gt;
 &lt;h3 id=&#34;diving-into-the-concept-of-oauth-20-what-it-really-is&#34;&gt;Diving Into the Concept of OAuth 2.0: What It Really Is
 &lt;/h3&gt;&lt;p&gt;OAuth 2.0, which stands for &amp;ldquo;Open Authorization,&amp;rdquo; is a standardized protocol developed to enable a website or application to access resources hosted by other web applications on behalf of a user. Introduced in 2012 as a successor to OAuth 1.0, OAuth 2.0 has since become the widely accepted standard for online authorization. This protocol facilitates consented access and imposes restrictions on what actions a client application can perform on resources on behalf of the user, all while ensuring that the user&amp;rsquo;s credentials remain confidential and are never shared.&lt;/p&gt;
@@ -46,14 +49,17 @@
 &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;:  The difference between authentication and authorization is as follows: Authentication involves verifying the true identity of a user or entity, while authorization determines the access levels and permissions that a user or entity is granted within a system. In essence, authentication must occur before authorization, as verifying identity is a prerequisite for establishing the appropriate access rights.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;OAuth2.0 employs Access Tokens to manage this access. An Access Token is a data element that signifies the authorization to access resources on behalf of the end-user. While OAuth 2.0 does not prescribe a specific format for these tokens, the JSON Web Token (JWT) format is frequently used in practice. This format allows token issuers to embed information directly within the token. Additionally, for security purposes, Access Tokens can be assigned an expiration date to limit their validity.
+&lt;br&gt;
 &lt;br&gt;&lt;/p&gt;
 &lt;h3 id=&#34;oauth-20-roles&#34;&gt;OAuth 2.0 Roles
-&lt;/h3&gt;&lt;p&gt;The OAuth 2.0 authorization process is defined by distinct roles. These roles play a fundamental part in how authorization is managed and executed, and the end-to-end logic of the process relies on them. &lt;strong&gt;They are a key concept for understanding how OAuth 2.0 functions..&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles.jpg&#34;
+&lt;/h3&gt;&lt;p&gt;The OAuth 2.0 authorization process is defined by distinct roles. These roles play a fundamental part in how authorization is managed and executed, and the end-to-end logic of the process relies on them. &lt;strong&gt;They are a key concept for understanding how OAuth 2.0 functions.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles.jpg&#34;
 	width=&#34;1920&#34;
 	height=&#34;1080&#34;
-	srcset=&#34;http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles_hu4ba72b5e5ecba5c4e5e96d0ca5f63064_286740_480x0_resize_q75_box.jpg 480w, http://localhost:1313/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles_hu4ba72b5e5ecba5c4e5e96d0ca5f63064_286740_1024x0_resize_q75_box.jpg 1024w&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles_hu4ba72b5e5ecba5c4e5e96d0ca5f63064_286740_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/oauth2-roles_hu4ba72b5e5ecba5c4e5e96d0ca5f63064_286740_1024x0_resize_q75_box.jpg 1024w&#34;
 	loading=&#34;lazy&#34;
+	
+		alt=&#34;Oauth 2.0 Roles&#34;
 	
 	
 		class=&#34;gallery-image&#34; 
@@ -61,7 +67,111 @@
 		data-flex-basis=&#34;426px&#34;
 	
 &gt;&lt;/p&gt;
+&lt;p&gt;Let’s kick things off with the &lt;strong&gt;Resource Owner&lt;/strong&gt;. This is you—the person who owns the resource. Imagine you&amp;rsquo;re trying to access something private protected by a route called &lt;code&gt;/resource&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/1.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/1_hu0b52beb76d6efac9014bd6b5282330b3_325269_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/1_hu0b52beb76d6efac9014bd6b5282330b3_325269_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;When you attempt to access this protected resource, you&amp;rsquo;re doing it through a web or mobile application. This application is known as the &lt;strong&gt;Client&lt;/strong&gt;. So, out of the four roles, it plays the &lt;strong&gt;Client Role&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/2.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/2_hu0b52beb76d6efac9014bd6b5282330b3_361731_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/2_hu0b52beb76d6efac9014bd6b5282330b3_361731_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;So, the Resource Owner heads over to the Authorization Server:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/3.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/3_hu0b52beb76d6efac9014bd6b5282330b3_370803_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/3_hu0b52beb76d6efac9014bd6b5282330b3_370803_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/4.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/4_hu0b52beb76d6efac9014bd6b5282330b3_394415_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/4_hu0b52beb76d6efac9014bd6b5282330b3_394415_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;With the Access Token in hand, the &lt;strong&gt;Client&lt;/strong&gt; can now make a request to the &lt;strong&gt;Resource Server&lt;/strong&gt; to access the resource:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/5.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/5_hu0b52beb76d6efac9014bd6b5282330b3_369355_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/5_hu0b52beb76d6efac9014bd6b5282330b3_369355_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;strong&gt;Resource Server&lt;/strong&gt; checks the validity of the access token since it was signed by the &lt;strong&gt;Authorization Server&lt;/strong&gt;. It can either validate this signature using a public key or shared secret without needing to contact the &lt;strong&gt;Authorization Server&lt;/strong&gt; every time, or it can perform token introspection by reaching out to the &lt;strong&gt;Authorization Server&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/6.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/6_hu0b52beb76d6efac9014bd6b5282330b3_341404_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/6_hu0b52beb76d6efac9014bd6b5282330b3_341404_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/7.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/7_hu0b52beb76d6efac9014bd6b5282330b3_323334_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/7_hu0b52beb76d6efac9014bd6b5282330b3_323334_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/8.jpg&#34;
+	width=&#34;1500&#34;
+	height=&#34;857&#34;
+	srcset=&#34;https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/8_hu0b52beb76d6efac9014bd6b5282330b3_361629_480x0_resize_q75_box.jpg 480w, https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/images/comic/8_hu0b52beb76d6efac9014bd6b5282330b3_361629_1024x0_resize_q75_box.jpg 1024w&#34;
+	loading=&#34;lazy&#34;
+	
+	
+		class=&#34;gallery-image&#34; 
+		data-flex-grow=&#34;175&#34;
+		data-flex-basis=&#34;420px&#34;
+	
+&gt;&lt;/p&gt;
+&lt;hr&gt;
 &lt;p&gt;Referencias:
+&lt;a class=&#34;link&#34; href=&#34;https://youtu.be/68azMcqPpyo?t=508&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://youtu.be/68azMcqPpyo?t=508&lt;/a&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://auth0.com/intro-to-iam/what-is-oauth-2&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;https://auth0.com/intro-to-iam/what-is-oauth-2&lt;/a&gt;
 &lt;a class=&#34;link&#34; href=&#34;https://www.oauth.com/oauth2-servers/definitions/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;

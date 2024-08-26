@@ -15,6 +15,31 @@
                 href="https://arthcruz.dev/en/"
                 />
   </url><url>
+    <loc>https://arthcruz.dev/en/tags/authentication/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://arthcruz.dev/en/tags/authorization/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://arthcruz.dev/en/categories/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="pt-br"
+                href="https://arthcruz.dev/pt-br/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://arthcruz.dev/en/categories/"
+                />
+  </url><url>
+    <loc>https://arthcruz.dev/en/tags/oauth/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://arthcruz.dev/en/tags/oauth2/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://arthcruz.dev/en/posts/</loc>
     <lastmod>2024-08-03T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -28,6 +53,28 @@
                 href="https://arthcruz.dev/en/posts/"
                 />
   </url><url>
+    <loc>https://arthcruz.dev/en/tags/security/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://arthcruz.dev/en/tags/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="pt-br"
+                href="https://arthcruz.dev/pt-br/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://arthcruz.dev/en/tags/"
+                />
+  </url><url>
+    <loc>https://arthcruz.dev/en/categories/web-security/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://arthcruz.dev/en/posts/what_is_o_auth_2_0_and_how_it_works/</loc>
+    <lastmod>2024-08-03T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://arthcruz.dev/en/categories/basics/</loc>
     <lastmod>2024-07-31T00:00:00+00:00</lastmod>
     <xhtml:link
@@ -39,19 +86,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://arthcruz.dev/en/categories/basics/"
-                />
-  </url><url>
-    <loc>https://arthcruz.dev/en/categories/</loc>
-    <lastmod>2024-07-31T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/categories/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://arthcruz.dev/en/categories/"
                 />
   </url><url>
     <loc>https://arthcruz.dev/en/posts/hello-world/</loc>
@@ -78,19 +112,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://arthcruz.dev/en/categories/javascript/"
-                />
-  </url><url>
-    <loc>https://arthcruz.dev/en/tags/</loc>
-    <lastmod>2024-07-31T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="pt-br"
-                href="https://arthcruz.dev/pt-br/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://arthcruz.dev/en/tags/"
                 />
   </url><url>
     <loc>https://arthcruz.dev/en/tags/tutorial/</loc>

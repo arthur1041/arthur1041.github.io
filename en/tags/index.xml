@@ -6,7 +6,47 @@
         <description>Recent content in Tags on Arthur Cruz</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
-        <lastBuildDate>Wed, 31 Jul 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/en/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <lastBuildDate>Sat, 03 Aug 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/en/tags/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Authentication</title>
+        <link>https://arthcruz.dev/en/tags/authentication/</link>
+        <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://arthcruz.dev/en/tags/authentication/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Authorization</title>
+        <link>https://arthcruz.dev/en/tags/authorization/</link>
+        <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://arthcruz.dev/en/tags/authorization/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Oauth</title>
+        <link>https://arthcruz.dev/en/tags/oauth/</link>
+        <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://arthcruz.dev/en/tags/oauth/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Oauth2</title>
+        <link>https://arthcruz.dev/en/tags/oauth2/</link>
+        <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://arthcruz.dev/en/tags/oauth2/</guid>
+        <description></description>
+        </item>
+        <item>
+        <title>Security</title>
+        <link>https://arthcruz.dev/en/tags/security/</link>
+        <pubDate>Sat, 03 Aug 2024 00:00:00 +0000</pubDate>
+        
+        <guid>https://arthcruz.dev/en/tags/security/</guid>
+        <description></description>
+        </item>
+        <item>
         <title>Tutorial</title>
         <link>https://arthcruz.dev/en/tags/tutorial/</link>
         <pubDate>Wed, 31 Jul 2024 00:00:00 +0000</pubDate>
