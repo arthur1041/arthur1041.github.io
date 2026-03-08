@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Go on Arthur Cruz</title><link>https://arthcruz.dev/pt-br/tags/go/</link><description>Recent content in Go on Arthur Cruz</description><generator>Hugo -- gohugo.io</generator><language>pt-br</language><lastBuildDate>Tue, 24 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/pt-br/tags/go/index.xml" rel="self" type="application/rss+xml"/><item><title>Cópia Rasa (Shallow Copy) vs. Cópia Profunda (Deep Copy): Uma Explicação em Nível de Memória</title><link>https://arthcruz.dev/pt-br/posts/shallow-copy-vs-deep-copy-a-memory-level-explanation/</link><pubDate>Tue, 24 Feb 2026 00:00:00 +0000</pubDate><guid>https://arthcruz.dev/pt-br/posts/shallow-copy-vs-deep-copy-a-memory-level-explanation/</guid><description>&lt;img src="https://arthcruz.dev/pt-br/posts/shallow-copy-vs-deep-copy-a-memory-level-explanation/images/shallow_deep_copy_poster2.pt-br.png" alt="Featured image of post Cópia Rasa (Shallow Copy) vs. Cópia Profunda (Deep Copy): Uma Explicação em Nível de Memória" />&lt;p>Compreender como os dados são copiados na programação é fundamental para escrever software robusto e previsível. A distinção entre &lt;strong>cópia rasa (shallow copy)&lt;/strong> e &lt;strong>cópia profunda (deep copy)&lt;/strong> é frequentemente uma fonte de confusão, mas é crítica para gerenciar a memória, prevenir efeitos colaterais não intencionais e garantir a integridade dos dados. Este artigo aprofunda as complexidades desses mecanismos de cópia, explorando suas diferenças conceituais, implementações específicas de linguagem e a dinâmica de memória subjacente que governa seu comportamento.&lt;/p>
+&lt;h2 id="introdução-aos-mecanismos-de-cópia">Introdução aos Mecanismos de Cópia
+&lt;/h2>&lt;p>Quando um objeto é copiado, a operação essencialmente cria uma nova entidade que, em graus variados, se assemelha ao original. A natureza dessa semelhança — se é uma mera replicação de referências ou uma duplicação completa de todos os dados aninhados — define o tipo de cópia realizada. Essa distinção torna-se particularmente significativa ao lidar com estruturas de dados complexas que contêm outros objetos ou coleções.&lt;/p>
+&lt;h2 id="diferenças-conceituais-rasa-vs-profunda">Diferenças Conceituais: Rasa vs. Profunda
+&lt;/h2>&lt;h3 id="cópia-rasa-shallow-copy">Cópia Rasa (Shallow Copy)
+&lt;/h3>&lt;p>Uma &lt;strong>cópia rasa&lt;/strong> cria um novo objeto, mas em vez de duplicar objetos aninhados, ela copia suas referências. Isso significa que o novo objeto terá seu próprio endereço de memória distinto, mas quaisquer objetos mutáveis aninhados dentro dele ainda apontarão para os mesmos locais de memória que os do objeto original. Consequentemente, modificações em objetos mutáveis aninhados, seja na estrutura original ou na copiada, serão refletidas em ambas.&lt;/p>
+&lt;h3 id="cópia-profunda-deep-copy">Cópia Profunda (Deep Copy)
+&lt;/h3>&lt;p>Uma &lt;strong>cópia profunda&lt;/strong>, em contraste, cria um novo objeto e duplica recursivamente todos os objetos aninhados. Isso resulta em uma cópia completamente independente, onde não existem referências compartilhadas entre o objeto original e o novo objeto. Alterações feitas na cópia profunda, ou em seus componentes aninhados, não afetarão o objeto original, e vice-versa.&lt;/p>
+&lt;h2 id="dinâmica-da-memória-stack-vs-heap-e-referências">Dinâmica da Memória: Stack vs. Heap e Referências
+&lt;/h2>&lt;p>Para compreender totalmente as cópias rasas e profundas, é essencial entender como a memória é gerenciada. A &lt;strong>stack&lt;/strong> (pilha) é usada para alocação de memória estática, principalmente para tipos de dados primitivos e quadros de chamadas de função. A &lt;strong>heap&lt;/strong> (monte) é usada para alocação de memória dinâmica, onde objetos e estruturas de dados complexas residem. Variáveis frequentemente armazenam referências (endereços de memória) para objetos na heap.&lt;/p>
+&lt;h3 id="semântica-de-ponteiroreferência">Semântica de Ponteiro/Referência
+&lt;/h3>&lt;p>Em muitas linguagens, as variáveis não contêm diretamente objetos complexos, mas sim &lt;strong>referências&lt;/strong> ou &lt;strong>ponteiros&lt;/strong> para seus locais na memória. Quando ocorre uma cópia rasa, são essas referências que são duplicadas, não os objetos para os quais elas apontam. Uma cópia profunda, no entanto, desreferencia esses ponteiros e cria novos objetos em novos locais de memória para cada componente aninhado.&lt;/p>
+&lt;h3 id="mutabilidade-vs-imutabilidade">Mutabilidade vs. Imutabilidade
+&lt;/h3>&lt;p>&lt;strong>Mutabilidade&lt;/strong> refere-se à capacidade de um objeto ser alterado após sua criação. Objetos como listas, dicionários e instâncias de classes personalizadas são tipicamente mutáveis. &lt;strong>Imutabilidade&lt;/strong> significa que um objeto não pode ser alterado após a criação (por exemplo, strings, números, tuplas em Python). As implicações das cópias rasas e profundas são mais pronunciadas com objetos mutáveis aninhados, pois as alterações nos componentes mutáveis compartilhados podem levar a um comportamento inesperado.&lt;/p>
+&lt;h2 id="visualizando-a-memória-diagramas-ascii">Visualizando a Memória: Diagramas ASCII
+&lt;/h2>&lt;p>Considere um objeto &lt;code>A&lt;/code> contendo um objeto aninhado mutável &lt;code>B&lt;/code>.&lt;/p>
+&lt;h3 id="objeto-original">Objeto Original
+&lt;/h3>&lt;pre tabindex="0">&lt;code>Stack: Heap:
++---+ +-------------------+
+| A | -------&amp;gt; | Objeto A |
++---+ | +-------------+ |
+| | ref para B | ---&amp;gt; +-------------------+
+| +-------------+ | | Objeto B |
++-------------------+ | Valor: 10 |
++-------------------+
+&lt;/code>&lt;/pre>&lt;h3 id="cópia-rasa">Cópia Rasa
+&lt;/h3>&lt;p>Quando &lt;code>A_rasa = copia_rasa(A)&lt;/code>:&lt;/p>
+&lt;pre tabindex="0">&lt;code>Stack: Heap:
++---+ +-------------------+
+| A | -------&amp;gt; | Objeto A |
++---+ | +-------------+ |
+| | ref para B | ---&amp;gt; +-------------------+
+| +-------------+ | | Objeto B |
++-----------+ +-------------------+ | Valor: 10 |
+| A_rasa | --+-------------------+ +-------------------+
++-----------+ | Objeto A_rasa |
+| +-------------+ |
+| | ref para B | --^
+| +-------------+ |
++-------------------+
+&lt;/code>&lt;/pre>&lt;p>Observe que o &lt;code>Objeto B&lt;/code> é compartilhado. Modificar o &lt;code>Objeto B&lt;/code> através de &lt;code>A&lt;/code> ou &lt;code>A_rasa&lt;/code> afetará ambos.&lt;/p>
+&lt;h3 id="cópia-profunda">Cópia Profunda
+&lt;/h3>&lt;p>Quando &lt;code>A_profunda = copia_profunda(A)&lt;/code>:&lt;/p>
+&lt;pre tabindex="0">&lt;code>Stack: Heap:
++---+ +-------------------+
+| A | -------&amp;gt; | Objeto A |
++---+ | +-------------+ |
+| | ref para B | ---&amp;gt; +-------------------+
+| +-------------+ | | Objeto B |
++-------------------+ | Valor: 10 |
++-------------------+
++-----------+ +-------------------+
+| A_profunda| --&amp;gt;| Objeto A_profunda |
++-----------+ | +-------------+ |
+| | ref para B_novo| ---&amp;gt; +-------------------+
+| +-------------+ | | Objeto B_novo |
++-------------------+ | Valor: 10 |
++-------------------+
+&lt;/code>&lt;/pre>&lt;p>Aqui, &lt;code>Objeto B&lt;/code> e &lt;code>Objeto B_novo&lt;/code> são entidades inteiramente separadas.&lt;/p>
+&lt;h2 id="implementações-e-exemplos-específicos-de-linguagem">Implementações e Exemplos Específicos de Linguagem
+&lt;/h2>&lt;h3 id="python">Python
+&lt;/h3>&lt;p>O módulo &lt;code>copy&lt;/code> do Python fornece &lt;code>copy()&lt;/code> para cópias rasas e &lt;code>deepcopy()&lt;/code> para cópias profundas. Para objetos personalizados, os métodos &lt;code>__copy__&lt;/code> e &lt;code>__deepcopy__&lt;/code> podem ser implementados.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> copy
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>original_list &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, [&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>], &lt;span style="color:#ae81ff">4&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Cópia Rasa&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>shallow_copied_list &lt;span style="color:#f92672">=&lt;/span> copy&lt;span style="color:#f92672">.&lt;/span>copy(original_list)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>shallow_copied_list[&lt;span style="color:#ae81ff">1&lt;/span>][&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">99&lt;/span> &lt;span style="color:#75715e"># Modifica a lista aninhada em ambos&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(original_list) &lt;span style="color:#75715e"># Saída: [1, [99, 3], 4]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(shallow_copied_list) &lt;span style="color:#75715e"># Saída: [1, [99, 3], 4]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Cópia Profunda&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deep_copied_list &lt;span style="color:#f92672">=&lt;/span> copy&lt;span style="color:#f92672">.&lt;/span>deepcopy(original_list)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deep_copied_list[&lt;span style="color:#ae81ff">1&lt;/span>][&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#75715e"># Modifica apenas a cópia profunda&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(original_list) &lt;span style="color:#75715e"># Saída: [1, [99, 3], 4] (original permanece inalterado)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(deep_copied_list) &lt;span style="color:#75715e"># Saída: [1, [100, 3], 4]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="java">Java
+&lt;/h3>&lt;p>Em Java, &lt;code>Object.clone()&lt;/code> realiza uma cópia rasa por padrão. Para obter uma cópia profunda, é preciso implementar manualmente a interface &lt;code>Cloneable&lt;/code> e sobrescrever o método &lt;code>clone()&lt;/code> para clonar recursivamente campos mutáveis, ou usar serialização.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Course&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String name;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">Course&lt;/span>(String name) { &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> name; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Student&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> Cloneable {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String studentName;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course course;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">Student&lt;/span>(String studentName, Course course) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">studentName&lt;/span> &lt;span style="color:#f92672">=&lt;/span> studentName;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">course&lt;/span> &lt;span style="color:#f92672">=&lt;/span> course;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia rasa via clone() padrão&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">protected&lt;/span> Object &lt;span style="color:#a6e22e">clone&lt;/span>() &lt;span style="color:#66d9ef">throws&lt;/span> CloneNotSupportedException {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">super&lt;/span>.&lt;span style="color:#a6e22e">clone&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Implementação de cópia profunda (manual)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> Student &lt;span style="color:#a6e22e">deepCopy&lt;/span>() &lt;span style="color:#66d9ef">throws&lt;/span> CloneNotSupportedException {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student clonedStudent &lt;span style="color:#f92672">=&lt;/span> (Student) &lt;span style="color:#66d9ef">super&lt;/span>.&lt;span style="color:#a6e22e">clone&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clonedStudent.&lt;span style="color:#a6e22e">course&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span>); &lt;span style="color:#75715e">// Cópia profunda do objeto Course&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> clonedStudent;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(String&lt;span style="color:#f92672">[]&lt;/span> args) &lt;span style="color:#66d9ef">throws&lt;/span> CloneNotSupportedException {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course math &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;Matemática&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Student(&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, math);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Rasa&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student shallowCopyStudent &lt;span style="color:#f92672">=&lt;/span> (Student) originalStudent.&lt;span style="color:#a6e22e">clone&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> shallowCopyStudent.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Física&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Também altera originalStudent.course.name&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> System.&lt;span style="color:#a6e22e">out&lt;/span>.&lt;span style="color:#a6e22e">println&lt;/span>(originalStudent.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span>); &lt;span style="color:#75715e">// Saída: Física&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Profunda&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course history &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;História&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent2 &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Student(&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, history);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student deepCopyStudent &lt;span style="color:#f92672">=&lt;/span> originalStudent2.&lt;span style="color:#a6e22e">deepCopy&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deepCopyStudent.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Química&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Altera apenas deepCopyStudent.course.name&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> System.&lt;span style="color:#a6e22e">out&lt;/span>.&lt;span style="color:#a6e22e">println&lt;/span>(originalStudent2.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span>); &lt;span style="color:#75715e">// Saída: História&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="javascript">JavaScript
+&lt;/h3>&lt;p>JavaScript não possui uma função de cópia profunda embutida. Cópias rasas podem ser obtidas usando o operador spread (&lt;code>...&lt;/code>), &lt;code>Object.assign()&lt;/code>, ou &lt;code>Array.prototype.slice()&lt;/code>. Cópias profundas tipicamente exigem &lt;code>JSON.parse(JSON.stringify())&lt;/code> (com limitações para funções, &lt;code>undefined&lt;/code>, objetos &lt;code>Date&lt;/code>, etc.) ou bibliotecas externas como &lt;code>_.cloneDeep()&lt;/code> do Lodash.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-javascript" data-lang="javascript">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">originalObject&lt;/span> &lt;span style="color:#f92672">=&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">a&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">b&lt;/span>&lt;span style="color:#f92672">:&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">c&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Cópia Rasa
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">shallowCopyObject&lt;/span> &lt;span style="color:#f92672">=&lt;/span> { ...&lt;span style="color:#a6e22e">originalObject&lt;/span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">shallowCopyObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">99&lt;/span>; &lt;span style="color:#75715e">// Também modifica originalObject.b.c
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#a6e22e">originalObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span>); &lt;span style="color:#75715e">// Saída: 99
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Cópia Profunda (com limitação de serialização JSON)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">deepCopyObject&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">JSON&lt;/span>.&lt;span style="color:#a6e22e">parse&lt;/span>(&lt;span style="color:#a6e22e">JSON&lt;/span>.&lt;span style="color:#a6e22e">stringify&lt;/span>(&lt;span style="color:#a6e22e">originalObject&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">deepCopyObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span>; &lt;span style="color:#75715e">// Modifica apenas deepCopyObject.b.c
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#a6e22e">originalObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span>); &lt;span style="color:#75715e">// Saída: 99 (original permanece inalterado)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="go">Go
+&lt;/h3>&lt;p>Em Go, a atribuição (&lt;code>=&lt;/code>) cria uma cópia rasa para structs. Slices e maps são tipos de referência, então atribuí-los também cria uma cópia rasa da referência. A cópia profunda requer iteração manual ou serialização/desserialização personalizada.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">City&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Name&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#75715e">// Ponteiro para Address
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">originalAddress&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;Nova Iorque&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">originalPerson&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">originalAddress&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Rasa (atribuição de struct)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">shallowCopyPerson&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">originalPerson&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">shallowCopyPerson&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span> = &lt;span style="color:#e6db74">&amp;#34;Londres&amp;#34;&lt;/span> &lt;span style="color:#75715e">// Também modifica originalPerson.Address.City
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">originalPerson&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span>) &lt;span style="color:#75715e">// Saída: Londres
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Profunda (manual)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">originalAddress2&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;Paris&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">originalPerson2&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">originalAddress2&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">deepCopyAddress&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span>{&lt;span style="color:#a6e22e">originalPerson2&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">deepCopyPerson&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span>{&lt;span style="color:#a6e22e">originalPerson2&lt;/span>.&lt;span style="color:#a6e22e">Name&lt;/span>, &lt;span style="color:#a6e22e">deepCopyAddress&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">deepCopyPerson&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span> = &lt;span style="color:#e6db74">&amp;#34;Roma&amp;#34;&lt;/span> &lt;span style="color:#75715e">// Modifica apenas deepCopyPerson.Address.City
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">originalPerson2&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span>) &lt;span style="color:#75715e">// Saída: Paris
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="c">C++
+&lt;/h3>&lt;p>Em C++, a atribuição (&lt;code>=&lt;/code>) para classes personalizadas realiza uma cópia rasa por padrão (cópia membro a membro). Para obter uma cópia profunda, um construtor de cópia e um operador de atribuição de cópia personalizados devem ser implementados para lidar com a alocação de memória dinâmica e copiar recursivamente objetos aninhados. A Regra dos Três/Cinco/Zero se aplica aqui.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Course&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>string name;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course(std&lt;span style="color:#f92672">::&lt;/span>string n) &lt;span style="color:#f92672">:&lt;/span> name(n) {}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Student&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>string studentName;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course&lt;span style="color:#f92672">*&lt;/span> course; &lt;span style="color:#75715e">// Ponteiro para Course
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student(std&lt;span style="color:#f92672">::&lt;/span>string sn, Course&lt;span style="color:#f92672">*&lt;/span> c) &lt;span style="color:#f92672">:&lt;/span> studentName(sn), course(c) {}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Construtor de cópia padrão (cópia rasa)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Student(&lt;span style="color:#66d9ef">const&lt;/span> Student&lt;span style="color:#f92672">&amp;amp;&lt;/span> other) &lt;span style="color:#f92672">:&lt;/span> studentName(other.studentName), course(other.course) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Construtor de cópia rasa chamado&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Construtor de cópia profunda
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Student &lt;span style="color:#a6e22e">deepCopy&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Cópia profunda realizada&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> Student(&lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>studentName, &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>course)); &lt;span style="color:#75715e">// Cria novo objeto Course
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">~&lt;/span>Student() { &lt;span style="color:#75715e">// Destrutor para liberar memória para o curso
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Apenas exclua se este objeto possuir o ponteiro do curso
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Isso destaca a complexidade do gerenciamento manual de memória com cópias rasas/profundas
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Para simplificar, neste exemplo, assumiremos a propriedade para deepCopy()
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Em C++ do mundo real, ponteiros inteligentes são preferidos.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// delete course;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course&lt;span style="color:#f92672">*&lt;/span> math &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;Matemática&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent(&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, math);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Rasa (usando o construtor de cópia padrão)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Student shallowCopyStudent &lt;span style="color:#f92672">=&lt;/span> originalStudent; &lt;span style="color:#75715e">// Chama o construtor de cópia
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> shallowCopyStudent.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Física&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Também modifica originalStudent.course-&amp;gt;name
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> originalStudent.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl; &lt;span style="color:#75715e">// Saída: Física
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Profunda
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Course&lt;span style="color:#f92672">*&lt;/span> history &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;História&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent2(&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, history);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student deepCopyStudent &lt;span style="color:#f92672">=&lt;/span> originalStudent2.deepCopy();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deepCopyStudent.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Química&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Modifica apenas deepCopyStudent.course-&amp;gt;name
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> originalStudent2.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl; &lt;span style="color:#75715e">// Saída: História
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">delete&lt;/span> math;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">delete&lt;/span> history;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Nota: deepCopyStudent.course também precisa ser excluído se não estiver usando ponteiros inteligentes
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// delete deepCopyStudent.course; // Isso seria necessário em um exemplo completo
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="rust">Rust
+&lt;/h3>&lt;p>Rust distingue entre os traits &lt;code>Copy&lt;/code> e &lt;code>Clone&lt;/code>. O trait &lt;code>Copy&lt;/code> é para tipos que podem ser duplicados simplesmente copiando bits (por exemplo, tipos primitivos, structs contendo apenas tipos &lt;code>Copy&lt;/code>). O trait &lt;code>Clone&lt;/code> é para tipos que exigem uma cópia profunda e deve ser explicitamente implementado. Para tipos que implementam &lt;code>Copy&lt;/code>, a atribuição realiza uma cópia bit a bit. Para tipos que implementam &lt;code>Clone&lt;/code>, o método &lt;code>clone()&lt;/code> realiza uma cópia profunda por convenção.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#[derive(Debug, Clone)]&lt;/span> &lt;span style="color:#75715e">// Deriva Clone para cópia profunda
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">struct&lt;/span> &lt;span style="color:#a6e22e">Address&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> city: String,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#[derive(Debug, Clone)]&lt;/span> &lt;span style="color:#75715e">// Deriva Clone para cópia profunda
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">struct&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: String,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> address: &lt;span style="color:#a6e22e">Address&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> original_address &lt;span style="color:#f92672">=&lt;/span> Address { city: String::from(&lt;span style="color:#e6db74">&amp;#34;Nova Iorque&amp;#34;&lt;/span>) };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> original_person &lt;span style="color:#f92672">=&lt;/span> Person { name: String::from(&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>), address: &lt;span style="color:#a6e22e">original_address&lt;/span>.clone() };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Rasa (atribuição para tipos que não são Copy, como String, significa mover)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Para structs com campos não-Copy, a atribuição é um movimento, não uma cópia rasa.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Para demonstrar o comportamento de cópia rasa, precisamos clonar explicitamente a struct externa
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// mas não as partes mutáveis internas, o que não é idiomático em Rust para dados mutáveis.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// O sistema de propriedade do Rust torna a cópia rasa direta difícil de ilustrar sem violar as regras de propriedade.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Em vez disso, focaremos em `Clone` para cópia profunda.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Cópia Profunda usando o trait Clone
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">let&lt;/span> deep_copy_person &lt;span style="color:#f92672">=&lt;/span> original_person.clone();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deep_copy_person.address.city &lt;span style="color:#f92672">=&lt;/span> String::from(&lt;span style="color:#e6db74">&amp;#34;Londres&amp;#34;&lt;/span>); &lt;span style="color:#75715e">// Modifica apenas deep_copy_person
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;Pessoa original: &lt;/span>&lt;span style="color:#e6db74">{:?}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, original_person); &lt;span style="color:#75715e">// Saída: Pessoa original: Person { name: &amp;#34;Alice&amp;#34;, address: Address { city: &amp;#34;Nova Iorque&amp;#34; } }
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;Pessoa com cópia profunda: &lt;/span>&lt;span style="color:#e6db74">{:?}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, deep_copy_person); &lt;span style="color:#75715e">// Saída: Pessoa com cópia profunda: Person { name: &amp;#34;Alice&amp;#34;, address: Address { city: &amp;#34;Londres&amp;#34; } }
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Exemplo com trait Copy (para tipos primitivos)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">let&lt;/span> x &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> y &lt;span style="color:#f92672">=&lt;/span> x; &lt;span style="color:#75715e">// y é uma cópia de x, x ainda é válido
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;x: &lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">, y: &lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, x, y);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="análise-em-nível-binário">Análise em Nível Binário
+&lt;/h2>&lt;p>No nível mais baixo, a memória é uma sequência contígua de bytes. As variáveis contêm valores, que podem ser os próprios dados (para primitivos) ou um endereço de memória (para referências/ponteiros para objetos).&lt;/p>
+&lt;p>Quando ocorre uma cópia rasa, os bytes que representam as &lt;em>referências&lt;/em> para objetos aninhados são copiados. Os bytes de dados reais dos objetos aninhados não são duplicados. Isso significa que dois objetos distintos agora contêm endereços de memória idênticos apontando para a mesma estrutura de dados subjacente.&lt;/p>
+&lt;p>Para uma cópia profunda, o processo é mais envolvido. Ele envolve a travessia do grafo de objetos, começando pelo objeto de nível superior. Para cada objeto aninhado encontrado, nova memória é alocada na heap, e os dados do objeto aninhado original são copiados byte a byte para este novo local de memória. Este processo recursivo garante que todos os componentes do novo objeto sejam distintos do original, residindo em seus próprios segmentos de memória alocados.&lt;/p>
+&lt;h3 id="stack-vs-heap-revisitados">Stack vs. Heap Revisitados
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>Stack (Pilha)&lt;/strong>: Armazena variáveis locais, parâmetros de função e endereços de retorno. A alocação/desalocação de memória é automática e rápida. Valores primitivos são frequentemente armazenados diretamente na stack.&lt;/li>
+&lt;li>&lt;strong>Heap (Monte)&lt;/strong>: Armazena objetos e estruturas de dados alocados dinamicamente cujo tamanho pode não ser conhecido em tempo de compilação ou cuja vida útil se estende além do escopo de uma única chamada de função. Objetos criados com &lt;code>new&lt;/code> (Java, C++), &lt;code>malloc&lt;/code> (C) ou implicitamente (Python, JavaScript) residem aqui. Variáveis na stack frequentemente contêm ponteiros para esses objetos alocados na heap.&lt;/li>
+&lt;/ul>
+&lt;p>Uma cópia rasa duplica a referência alocada na stack, mas o objeto alocado na heap permanece singular. Uma cópia profunda envolve novas alocações na heap para todos os objetos duplicados.&lt;/p>
+&lt;h2 id="considerações-de-desempenho">Considerações de Desempenho
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>Cópia Rasa&lt;/strong>: Geralmente mais rápida, pois envolve apenas a cópia de referências (ponteiros), que é uma operação de tamanho fixo, independentemente da complexidade dos objetos aninhados. Não requer alocação de memória adicional para dados aninhados.&lt;/li>
+&lt;li>&lt;strong>Cópia Profunda&lt;/strong>: Pode ser significativamente mais lenta e consumir mais memória, especialmente para grafos de objetos grandes e profundamente aninhados. Envolve travessia recursiva, novas alocações de memória para cada objeto aninhado e cópia de dados byte a byte. O impacto no desempenho pode ser substancial, tornando-o uma consideração para aplicações críticas de desempenho.&lt;/li>
+&lt;/ul>
+&lt;h2 id="bugs-do-mundo-real-causados-por-cópias-rasas">Bugs do Mundo Real Causados por Cópias Rasas
+&lt;/h2>&lt;p>Cópias rasas são uma fonte comum de bugs sutis, particularmente quando os desenvolvedores não estão cientes das referências compartilhadas. Exemplos incluem:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Alterações Inesperadas de Estado&lt;/strong>: Modificar um objeto de configuração que foi copiado rasamente de um modelo padrão. Quaisquer alterações em listas ou dicionários aninhados na configuração copiada alteram inadvertidamente o modelo padrão, afetando outras partes da aplicação que dependem do padrão original.&lt;/li>
+&lt;li>&lt;strong>Corrupção de Dados em Ambientes Multi-threaded&lt;/strong>: Em programação concorrente, se vários threads operam em cópias rasas de um objeto, e essas cópias compartilham dados mutáveis aninhados, condições de corrida podem ocorrer, levando à corrupção de dados ou estados inconsistentes.&lt;/li>
+&lt;li>&lt;strong>Problemas de Re-renderização de Componentes de UI&lt;/strong>: Em frameworks de front-end, se um componente recebe uma cópia rasa de props contendo objetos mutáveis, e esses objetos aninhados são modificados diretamente, o framework pode não detectar uma alteração nas props (porque a própria referência não mudou), falhando em re-renderizar o componente com os dados atualizados.&lt;/li>
+&lt;/ol>
+&lt;h2 id="quando-a-cópia-profunda-é-um-code-smell">Quando a Cópia Profunda é um Code Smell
+&lt;/h2>&lt;p>Embora as cópias profundas forneçam independência completa, seu uso excessivo pode indicar um &lt;strong>code smell&lt;/strong> (mau cheiro de código):&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Sobrecarga de Desempenho&lt;/strong>: Como observado, a cópia profunda pode ser cara. Se uma cópia profunda for realizada frequentemente em grandes estruturas de dados sem uma necessidade clara de independência completa, ela pode se tornar um gargalo de desempenho.&lt;/li>
+&lt;li>&lt;strong>Aumento do Consumo de Memória&lt;/strong>: Duplicar grafos de objetos inteiros consome significativamente mais memória. O excesso de cópia profunda pode levar a um maior uso de memória e, potencialmente, a erros de falta de memória.&lt;/li>
+&lt;li>&lt;strong>Complexidade e Manutenção&lt;/strong>: Implementar lógica de cópia profunda personalizada (especialmente em linguagens sem suporte embutido) pode ser complexo e propenso a erros. Adiciona código boilerplate e aumenta a carga de manutenção.&lt;/li>
+&lt;li>&lt;strong>Quebra da Identidade do Objeto&lt;/strong>: Se a identidade do objeto for crucial (por exemplo, para cache, identificadores únicos ou estruturas de grafo), a cópia profunda pode quebrar essas relações criando objetos novos e distintos.&lt;/li>
+&lt;/ul>
+&lt;p>Frequentemente, a necessidade de cópia profunda sugere que o design do objeto pode ser problemático, ou que o fluxo de dados poderia ser gerenciado de forma mais eficaz, talvez através de estruturas de dados imutáveis ou semânticas de propriedade mais claras.&lt;/p>
+&lt;h2 id="quando-usar-cada-tipo-de-cópia">Quando Usar Cada Tipo de Cópia
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">Característica&lt;/th>
+&lt;th style="text-align:left">Cópia Rasa (Shallow Copy)&lt;/th>
+&lt;th style="text-align:left">Cópia Profunda (Deep Copy)&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Independência&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Novo objeto, mas objetos mutáveis aninhados são compartilhados&lt;/td>
+&lt;td style="text-align:left">Objeto completamente independente e todos os seus dados aninhados&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Desempenho&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Mais rápida (copia referências)&lt;/td>
+&lt;td style="text-align:left">Mais lenta (recursiva, aloca nova memória)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Uso de Memória&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Menor (compartilha dados aninhados)&lt;/td>
+&lt;td style="text-align:left">Maior (duplica todos os dados aninhados)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Casos de Uso&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Copiar objetos simples, dados aninhados imutáveis, ou quando referências compartilhadas são desejadas&lt;/td>
+&lt;td style="text-align:left">Quando a isolação completa do original é necessária, especialmente com objetos mutáveis aninhados&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Efeitos Colaterais&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Alterações em objetos mutáveis aninhados afetam tanto o original quanto a cópia&lt;/td>
+&lt;td style="text-align:left">Alterações afetam apenas o objeto copiado&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="conclusão">Conclusão
+&lt;/h2>&lt;p>A escolha entre uma cópia rasa e uma cópia profunda não é arbitrária; é uma decisão de design deliberada com implicações significativas para o comportamento do programa, desempenho e uso de memória. Uma cópia rasa é eficiente para objetos simples ou quando referências compartilhadas a dados mutáveis aninhados são aceitáveis ou até desejadas. Por outro lado, uma cópia profunda é essencial quando a independência completa do objeto original, incluindo todos os seus componentes aninhados, é primordial. Uma compreensão completa desses mecanismos de cópia, juntamente com a consciência do gerenciamento de memória e dos comportamentos específicos da linguagem, capacita os desenvolvedores a fazer escolhas informadas, prevenir bugs sutis e construir sistemas de software mais robustos e de fácil manutenção.&lt;/p></description></item></channel></rss>

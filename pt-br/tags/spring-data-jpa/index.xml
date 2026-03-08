@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Spring Data JPA on Arthur Cruz</title><link>https://arthcruz.dev/pt-br/tags/spring-data-jpa/</link><description>Recent content in Spring Data JPA on Arthur Cruz</description><generator>Hugo -- gohugo.io</generator><language>pt-br</language><lastBuildDate>Sat, 07 Mar 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/pt-br/tags/spring-data-jpa/index.xml" rel="self" type="application/rss+xml"/><item><title>Desmistificando o Princípio da Inversão de Dependência na Clean Architecture</title><link>https://arthcruz.dev/pt-br/posts/demystifying_the_dependency_inversion_principle_in_clean_architecture/</link><pubDate>Sat, 07 Mar 2026 00:00:00 +0000</pubDate><guid>https://arthcruz.dev/pt-br/posts/demystifying_the_dependency_inversion_principle_in_clean_architecture/</guid><description>&lt;img src="https://arthcruz.dev/pt-br/posts/demystifying_the_dependency_inversion_principle_in_clean_architecture/images/dip_poster.pt-br.png" alt="Featured image of post Desmistificando o Princípio da Inversão de Dependência na Clean Architecture" />&lt;p>Na busca por construir sistemas de software robustos, manuteníveis e testáveis, os princípios arquiteturais desempenham um papel fundamental. Entre eles, o &lt;strong>Princípio da Inversão de Dependência (DIP)&lt;/strong> se destaca como um pilar para alcançar designs altamente desacoplados e flexíveis, especialmente quando aplicado dentro de frameworks como a &lt;strong>Clean Architecture&lt;/strong>. Este post explorará o Princípio da Inversão de Dependência, esclarecerá sua relação com a Injeção de Dependência e demonstrará sua aplicação prática em Java, com foco no desacoplamento entre as camadas de Domínio e Infraestrutura.&lt;/p>
+&lt;h2 id="entendendo-o-princípio-da-inversão-de-dependência-dip">Entendendo o Princípio da Inversão de Dependência (DIP)
+&lt;/h2>&lt;p>O Princípio da Inversão de Dependência, um dos cinco princípios SOLID do design orientado a objetos, foi articulado por Robert C. Martin (Uncle Bob). Ele consiste em duas afirmações centrais [1]:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Módulos de alto nível não devem depender de módulos de baixo nível. Ambos devem depender de abstrações.&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Abstrações não devem depender de detalhes. Detalhes devem depender de abstrações.&lt;/strong>&lt;/li>
+&lt;/ol>
+&lt;p>Em essência, o DIP defende que o software seja projetado de forma que os módulos dependam de abstrações (interfaces ou classes abstratas) em vez de implementações concretas. Esse princípio garante que as políticas de alto nível e a lógica de negócio permaneçam independentes dos detalhes de implementação de baixo nível. Essa inversão na direção da dependência é fundamental para a criação de sistemas de software flexíveis e resilientes.&lt;/p>
+&lt;h2 id="dip-vs-injeção-de-dependência-di">DIP vs. Injeção de Dependência (DI)
+&lt;/h2>&lt;p>É comum confundir o DIP com a Injeção de Dependência (DI), mas são conceitos distintos:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Princípio da Inversão de Dependência (DIP)&lt;/strong> é um &lt;strong>princípio de design&lt;/strong>. Trata-se da &lt;em>direção&lt;/em> das dependências, afirmando que módulos de alto nível não devem depender de módulos de baixo nível, mas sim de abstrações. É uma diretriz arquitetural de alto nível, focada no &lt;em>que&lt;/em> alcançar em termos de direção de dependência [2].&lt;/li>
+&lt;li>&lt;strong>Injeção de Dependência (DI)&lt;/strong> é um &lt;strong>padrão de design&lt;/strong> e uma técnica para implementar o DIP. Trata-se de &lt;em>como&lt;/em> as dependências são fornecidas a uma classe. Em vez de a própria classe criar suas dependências, elas são injetadas nela a partir de uma fonte externa (geralmente um container de DI). A DI é um mecanismo concreto para &lt;em>como&lt;/em> alcançar a inversão de controle prescrita pelo DIP [3].&lt;/li>
+&lt;/ul>
+&lt;p>Em termos mais simples, o DIP é a &lt;em>estratégia&lt;/em> para o desacoplamento, e a DI é uma das &lt;em>táticas&lt;/em> para executar essa estratégia.&lt;/p>
+&lt;h2 id="o-princípio-da-inversão-de-dependência-na-clean-architecture">O Princípio da Inversão de Dependência na Clean Architecture
+&lt;/h2>&lt;pre class="mermaid">
+graph TD
+subgraph DomainLayer [&amp;#34;🏛️ Camada de Domínio&amp;#34;]
+direction TB
+U[&amp;#34;👤 User&amp;lt;br/&amp;gt;Entidade&amp;#34;]
+URI[&amp;#34;📋 UserRepository&amp;lt;br/&amp;gt;«interface»&amp;#34;]
+end
+subgraph ApplicationLayer [&amp;#34;🎯 Camada de Aplicação&amp;#34;]
+direction TB
+UC[&amp;#34;🔧 CreateUserUseCase&amp;lt;br/&amp;gt;&amp;lt;span style=&amp;#34;white-space: nowrap;&amp;#34;&amp;gt;Orquestra objetos de domínio&amp;lt;/span&amp;gt;&amp;#34;]
+end
+subgraph InfrastructureLayer [&amp;#34;&amp;lt;span style=&amp;#34;white-space: nowrap;&amp;#34;&amp;gt;🔌 Camada de Infraestrutura&amp;lt;/sp&amp;gt;&amp;#34;]
+direction TB
+URA[&amp;#34;&amp;lt;span style=&amp;#34;white-space: nowrap;&amp;#34;&amp;gt;🗄️ JpaUserRepositoryAdapter&amp;lt;/span&amp;gt;&amp;lt;br/&amp;gt;implementa UserRepository&amp;#34;]
+DB[(&amp;#34;💾 Banco de Dados&amp;lt;br/&amp;gt;PostgreSQL / MySQL&amp;#34;)]
+end
+subgraph CompositionRoot [&amp;#34;🧩 Composition Root&amp;#34;]
+direction TB
+DI[&amp;#34;⚡ Container de DI&amp;lt;br/&amp;gt;Spring / Guice / Manual&amp;#34;]
+end
+%% Setas de dependência principais
+UC --&amp;gt;|&amp;#34;&amp;lt;span style=&amp;#34;white-space: nowrap;&amp;#34;&amp;gt;depende de (tempo de compilação)&amp;lt;/span&amp;gt;&amp;#34;| URI
+URA -.-&amp;gt;|&amp;#34;&amp;lt;span style=&amp;#34;white-space: nowrap;&amp;#34;&amp;gt;implementa (ligação em runtime)&amp;lt;/span&amp;gt;&amp;#34;| URI
+%% Relações internas do domínio
+UC --&amp;gt;|usa| U
+URA --&amp;gt;|mapeia de/para| U
+URA --&amp;gt;|persiste via| DB
+%% Container de DI conecta o adapter ao use case
+DI --&amp;gt;|&amp;#34;injeta adapter no use case&amp;#34;| UC
+%% Estilização — paleta refinada
+classDef domain fill:#1e1b4b,color:#e0e7ff,stroke:#6366f1,stroke-width:2px
+classDef application fill:#14532d,color:#dcfce7,stroke:#22c55e,stroke-width:2px
+classDef infra fill:#1c1917,color:#fef3c7,stroke:#f59e0b,stroke-width:2px
+classDef composition fill:#1e293b,color:#e2e8f0,stroke:#94a3b8,stroke-width:2px,stroke-dasharray:6 3
+class U,URI domain
+class UC application
+class URA,DB infra
+class DI composition
+style DomainLayer fill:#0f0e2a,color:#a5b4fc,stroke:#6366f1,stroke-width:3px
+style ApplicationLayer fill:#052e16,color:#86efac,stroke:#22c55e,stroke-width:3px
+style InfrastructureLayer fill:#0c0a09,color:#fde68a,stroke:#f59e0b,stroke-width:3px
+style CompositionRoot fill:#0f172a,color:#cbd5e1,stroke:#64748b,stroke-width:2px,stroke-dasharray:8 4
+&lt;/pre>
+&lt;p>A Clean Architecture, defendida por Robert C. Martin, estrutura as aplicações em camadas concêntricas, com a lógica de negócio central (a camada de Domínio) no centro. Uma regra fundamental da Clean Architecture é a &lt;strong>Regra da Dependência&lt;/strong>: as dependências do código-fonte devem sempre apontar para dentro, em direção às políticas e regras de negócio de mais alto nível. Nenhuma camada externa deve jamais afetar uma camada interna [2].&lt;/p>
+&lt;p>É exatamente aqui que o DIP se torna indispensável. Sem o DIP, a &lt;strong>Camada de Aplicação&lt;/strong> (que contém os Use Cases, representando as políticas de alto nível) dependeria naturalmente da &lt;strong>Camada de Infraestrutura&lt;/strong> (detalhes de baixo nível) para coisas como acesso ao banco de dados ou chamadas a serviços externos. Por exemplo, um &lt;code>CreateUserUseCase&lt;/code> poderia chamar diretamente um &lt;code>JpaUserRepository&lt;/code>.&lt;/p>
+&lt;p>O DIP resolve isso invertendo a dependência. Em vez de a Camada de Aplicação depender da Camada de Infraestrutura, ambas as camadas dependem de uma &lt;strong>abstração&lt;/strong> definida dentro da própria &lt;strong>Camada de Domínio&lt;/strong>. A Camada de Infraestrutura então implementa essa abstração.&lt;/p>
+&lt;p>Considere o fluxo típico:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Camada de Aplicação (ex.: Use Cases)&lt;/strong> depende de interfaces (abstrações) definidas na Camada de Domínio.&lt;/li>
+&lt;li>&lt;strong>Camada de Domínio&lt;/strong> define as entidades de negócio centrais, value objects, domain services e interfaces (abstrações) para preocupações externas, como persistência de dados.&lt;/li>
+&lt;li>&lt;strong>Camada de Infraestrutura (ex.: repositórios concretos)&lt;/strong> implementa essas interfaces definidas na Camada de Domínio.&lt;/li>
+&lt;li>Em tempo de execução, um mecanismo externo (geralmente um framework de Injeção de Dependência) fornece à Camada de Aplicação instâncias das implementações da Camada de Infraestrutura, mas apenas por meio de suas interfaces abstratas.&lt;/li>
+&lt;/ul>
+&lt;p>Isso significa que a dependência do código-fonte flui da Camada de Infraestrutura &lt;em>em direção&lt;/em> à Camada de Domínio (porque a Infraestrutura implementa uma interface definida no Domínio), enquanto a Camada de Aplicação depende da Camada de Domínio. O fluxo de controle (em tempo de execução) vai da Camada de Aplicação, passando pelas abstrações da Camada de Domínio, até as implementações da Camada de Infraestrutura. Essa inversão é fundamental para manter a independência da lógica de negócio central e dos use cases.&lt;/p>
+&lt;h2 id="exemplo-prático-em-java">Exemplo Prático em Java
+&lt;/h2>&lt;p>Vamos ilustrar como o DIP é aplicado em uma aplicação Java seguindo os princípios da Clean Architecture, utilizando uma entidade &lt;code>User&lt;/code>, um &lt;code>UserRepository&lt;/code> para persistência de dados e um &lt;code>CreateUserUseCase&lt;/code>.&lt;/p>
+&lt;h3 id="1-camada-de-domínio-definindo-a-abstração-lógica-de-negócio-central">1. Camada de Domínio: Definindo a Abstração (Lógica de Negócio Central)
+&lt;/h3>&lt;p>A camada de Domínio contém a lógica de negócio central, definindo a entidade &lt;code>User&lt;/code> e a interface &lt;code>UserRepository&lt;/code>. Essa interface é a abstração da qual o &lt;code>CreateUserUseCase&lt;/code> (na Camada de Aplicação) dependerá. Ao colocar a interface aqui, a camada de Domínio permanece completamente desconhecida de como os dados do usuário são de fato persistidos.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// domain/model/User.java&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> com.example.cleanarch.domain.model;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> String id;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> String name;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> String email;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">User&lt;/span>(String id, String name, String email) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">id&lt;/span> &lt;span style="color:#f92672">=&lt;/span> id;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> name;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">email&lt;/span> &lt;span style="color:#f92672">=&lt;/span> email;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Getters e setters&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> String &lt;span style="color:#a6e22e">getId&lt;/span>() { &lt;span style="color:#66d9ef">return&lt;/span> id; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">setId&lt;/span>(String id) { &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">id&lt;/span> &lt;span style="color:#f92672">=&lt;/span> id; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> String &lt;span style="color:#a6e22e">getName&lt;/span>() { &lt;span style="color:#66d9ef">return&lt;/span> name; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">setName&lt;/span>(String name) { &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> name; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> String &lt;span style="color:#a6e22e">getEmail&lt;/span>() { &lt;span style="color:#66d9ef">return&lt;/span> email; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">setEmail&lt;/span>(String email) { &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">email&lt;/span> &lt;span style="color:#f92672">=&lt;/span> email; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// domain/port/UserRepository.java (Abstração/Port)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> com.example.cleanarch.domain.port;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.model.User;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> java.util.Optional;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">UserRepository&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> User &lt;span style="color:#a6e22e">save&lt;/span>(User user);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Optional&lt;span style="color:#f92672">&amp;lt;&lt;/span>User&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#a6e22e">findById&lt;/span>(String id);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="2-camada-de-aplicação-definindo-os-use-cases-política-de-alto-nível">2. Camada de Aplicação: Definindo os Use Cases (Política de Alto Nível)
+&lt;/h3>&lt;p>A camada de Aplicação contém as regras de negócio específicas da aplicação e orquestra o fluxo de dados de e para a camada de Domínio. Aqui, o &lt;code>CreateUserUseCase&lt;/code> depende da interface &lt;code>UserRepository&lt;/code> definida na camada de Domínio.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// application/usecase/CreateUserUseCase.java (Módulo de Alto Nível)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> com.example.cleanarch.application.usecase;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.model.User;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.port.UserRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">CreateUserUseCase&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">final&lt;/span> UserRepository userRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">CreateUserUseCase&lt;/span>(UserRepository userRepository) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">userRepository&lt;/span> &lt;span style="color:#f92672">=&lt;/span> userRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> User &lt;span style="color:#a6e22e">execute&lt;/span>(User user) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Lógica de negócio específica da aplicação pode ser inserida aqui antes de salvar&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// ex.: validação, logging, publicação de eventos&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> userRepository.&lt;span style="color:#a6e22e">save&lt;/span>(user);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="3-camada-de-infraestrutura-implementando-a-abstração-detalhe-de-baixo-nível">3. Camada de Infraestrutura: Implementando a Abstração (Detalhe de Baixo Nível)
+&lt;/h3>&lt;p>A camada de Infraestrutura contém os detalhes concretos, como o acesso ao banco de dados. Aqui, implementamos a interface &lt;code>UserRepository&lt;/code> definida na camada de Domínio. Essa implementação pode usar um framework específico de banco de dados como Spring Data JPA, Hibernate ou um cliente NoSQL.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// infrastructure/adapter/JpaUserRepositoryAdapter.java (Detalhe/Adapter)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> com.example.cleanarch.infrastructure.adapter;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.model.User;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.port.UserRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> org.springframework.stereotype.Repository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> java.util.Optional;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@Repository&lt;/span> &lt;span style="color:#75715e">// Exemplo com Spring Framework&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">JpaUserRepositoryAdapter&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> UserRepository {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Assume um repositório Spring Data JPA para as operações reais no BD&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">final&lt;/span> SpringDataJpaUserRepository springDataJpaUserRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">JpaUserRepositoryAdapter&lt;/span>(SpringDataJpaUserRepository springDataJpaUserRepository) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">springDataJpaUserRepository&lt;/span> &lt;span style="color:#f92672">=&lt;/span> springDataJpaUserRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> User &lt;span style="color:#a6e22e">save&lt;/span>(User user) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Converte o User do domínio para entidade JPA se necessário&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Salva usando springDataJpaUserRepository&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> System.&lt;span style="color:#a6e22e">out&lt;/span>.&lt;span style="color:#a6e22e">println&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Salvando usuário no banco de dados: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> user.&lt;span style="color:#a6e22e">getName&lt;/span>());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> user; &lt;span style="color:#75715e">// Por simplicidade, retornando o mesmo usuário&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> Optional&lt;span style="color:#f92672">&amp;lt;&lt;/span>User&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#a6e22e">findById&lt;/span>(String id) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Busca usando springDataJpaUserRepository e converte para User do domínio&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> System.&lt;span style="color:#a6e22e">out&lt;/span>.&lt;span style="color:#a6e22e">println&lt;/span>(&lt;span style="color:#e6db74">&amp;#34;Buscando usuário por ID: &amp;#34;&lt;/span> &lt;span style="color:#f92672">+&lt;/span> id);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> Optional.&lt;span style="color:#a6e22e">of&lt;/span>(&lt;span style="color:#66d9ef">new&lt;/span> User(id, &lt;span style="color:#e6db74">&amp;#34;Usuário Teste&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;teste@exemplo.com&amp;#34;&lt;/span>)); &lt;span style="color:#75715e">// Mock por simplicidade&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Repositório Spring Data JPA fictício (estaria em infrastructure/repository)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">interface&lt;/span> &lt;span style="color:#a6e22e">SpringDataJpaUserRepository&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// UserEntity save(UserEntity userEntity);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Optional&amp;lt;UserEntity&amp;gt; findById(String id);&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Observe que &lt;code>JpaUserRepositoryAdapter&lt;/code> depende de &lt;code>UserRepository&lt;/code> (uma abstração na camada de Domínio). Essa é a inversão: o módulo de baixo nível agora depende da abstração de alto nível, e não o contrário.&lt;/p>
+&lt;h3 id="4-composition-root-conectando-as-dependências">4. Composition Root: Conectando as Dependências
+&lt;/h3>&lt;p>No Composition Root (um módulo de configuração dedicado que fica fora das camadas centrais, embora em aplicações Spring geralmente resida em um pacote &lt;code>application/config&lt;/code>), o &lt;code>JpaUserRepositoryAdapter&lt;/code> concreto é fornecido ao &lt;code>CreateUserUseCase&lt;/code>. Isso é feito tipicamente usando um framework de Injeção de Dependência (como Spring, Guice ou Dagger), que automatiza o processo de criação de instâncias e as injeta por meio da interface &lt;code>UserRepository&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// application/config/AppConfig.java (Exemplo de Composition Root com Spring)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> com.example.cleanarch.application.config;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.application.usecase.CreateUserUseCase;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.port.UserRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.infrastructure.adapter.JpaUserRepositoryAdapter;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> org.springframework.context.annotation.Bean;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> org.springframework.context.annotation.Configuration;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">@Configuration&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">AppConfig&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Bean&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> UserRepository &lt;span style="color:#a6e22e">userRepository&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Em uma aplicação real, isso envolveria criar e configurar&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// o SpringDataJpaUserRepository real ou similar.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Para este exemplo, passaremos null por simplicidade.&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> JpaUserRepositoryAdapter(&lt;span style="color:#66d9ef">null&lt;/span>); &lt;span style="color:#75715e">// O repositório Spring Data JPA real seria injetado aqui pelo Spring&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Bean&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> CreateUserUseCase &lt;span style="color:#a6e22e">createUserUseCase&lt;/span>(UserRepository userRepository) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> CreateUserUseCase(userRepository);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Exemplo de como usar (ex.: em um método main ou controller)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(String&lt;span style="color:#f92672">[]&lt;/span> args) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Esta parte é tipicamente tratada pelo Spring Application Context&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Para demonstração:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> UserRepository repo &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> JpaUserRepositoryAdapter(&lt;span style="color:#66d9ef">null&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CreateUserUseCase useCase &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> CreateUserUseCase(repo);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> User newUser &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> User(&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;João Silva&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;joao.silva@exemplo.com&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> useCase.&lt;span style="color:#a6e22e">execute&lt;/span>(newUser);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Em tempo de execução, o &lt;code>CreateUserUseCase&lt;/code> recebe uma instância de &lt;code>JpaUserRepositoryAdapter&lt;/code> por meio de sua interface &lt;code>UserRepository&lt;/code>. As camadas de Aplicação e Domínio permanecem alheias à implementação concreta, aderindo estritamente ao DIP.&lt;/p>
+&lt;h3 id="conexão-manual-sem-framework">Conexão Manual (Sem Framework)
+&lt;/h3>&lt;p>Vale a pena entender o que um framework de DI faz por baixo dos panos. Aqui está a conexão equivalente feita inteiramente à mão — sem Spring, sem Guice, apenas Java puro:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// main/Main.java (Composition Root Manual)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> com.example.cleanarch.main;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.application.usecase.CreateUserUseCase;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.model.User;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.port.UserRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.infrastructure.adapter.JpaUserRepositoryAdapter;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Main&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(String&lt;span style="color:#f92672">[]&lt;/span> args) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 1. Criar o detalhe de baixo nível (o adapter concreto)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> UserRepository repository &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> JpaUserRepositoryAdapter(&lt;span style="color:#66d9ef">null&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 2. Injetá-lo no use case de alto nível por meio da interface&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CreateUserUseCase createUser &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> CreateUserUseCase(repository);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// 3. Executar — CreateUserUseCase não tem ideia de que está falando com JPA&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> User newUser &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> User(&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;João Silva&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;joao.silva@exemplo.com&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> createUser.&lt;span style="color:#a6e22e">execute&lt;/span>(newUser);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Essa é a essência do DIP em ação. &lt;code>CreateUserUseCase&lt;/code> é construído com uma referência &lt;code>UserRepository&lt;/code> e jamais sabe — nem se importa — que o tipo concreto por trás dela é &lt;code>JpaUserRepositoryAdapter&lt;/code>. Um framework como o Spring simplesmente automatiza essa conexão em larga escala, varrendo anotações &lt;code>@Bean&lt;/code> ou &lt;code>@Component&lt;/code> e construindo todo o grafo de objetos para você. O princípio é idêntico; o framework apenas remove o boilerplate.&lt;/p>
+&lt;h2 id="testando-com-dip-substituindo-o-repositório">Testando com DIP: Substituindo o Repositório
+&lt;/h2>&lt;p>Um dos benefícios mais imediatos e tangíveis do DIP é como ele simplifica drasticamente os testes unitários. Como &lt;code>CreateUserUseCase&lt;/code> depende da &lt;em>interface&lt;/em> &lt;code>UserRepository&lt;/code> em vez de uma classe JPA concreta, você pode substituí-la por um mock leve em memória durante os testes — sem banco de dados, sem contexto Spring, sem I/O lento.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// application/usecase/CreateUserUseCaseTest.java&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> com.example.cleanarch.application.usecase;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.model.User;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> com.example.cleanarch.domain.port.UserRepository;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> org.junit.jupiter.api.Test;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> java.util.ArrayList;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> java.util.List;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> java.util.Optional;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import static&lt;/span> org.junit.jupiter.api.Assertions.*;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">CreateUserUseCaseTest&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Um stub simples em memória — sem Mockito, sem Spring, sem banco de dados&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">InMemoryUserRepository&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> UserRepository {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">private&lt;/span> &lt;span style="color:#66d9ef">final&lt;/span> List&lt;span style="color:#f92672">&amp;lt;&lt;/span>User&lt;span style="color:#f92672">&amp;gt;&lt;/span> store &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> ArrayList&lt;span style="color:#f92672">&amp;lt;&amp;gt;&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> User &lt;span style="color:#a6e22e">save&lt;/span>(User user) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> store.&lt;span style="color:#a6e22e">add&lt;/span>(user);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> user;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> Optional&lt;span style="color:#f92672">&amp;lt;&lt;/span>User&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#a6e22e">findById&lt;/span>(String id) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> store.&lt;span style="color:#a6e22e">stream&lt;/span>().&lt;span style="color:#a6e22e">filter&lt;/span>(u &lt;span style="color:#f92672">-&amp;gt;&lt;/span> u.&lt;span style="color:#a6e22e">getId&lt;/span>().&lt;span style="color:#a6e22e">equals&lt;/span>(id)).&lt;span style="color:#a6e22e">findFirst&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> List&lt;span style="color:#f92672">&amp;lt;&lt;/span>User&lt;span style="color:#f92672">&amp;gt;&lt;/span> &lt;span style="color:#a6e22e">getStore&lt;/span>() { &lt;span style="color:#66d9ef">return&lt;/span> store; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Test&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">shouldSaveUserSuccessfully&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Arrange: injeta o stub em memória por meio da interface&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> InMemoryUserRepository fakeRepo &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> InMemoryUserRepository();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> CreateUserUseCase useCase &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> CreateUserUseCase(fakeRepo);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> User user &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> User(&lt;span style="color:#e6db74">&amp;#34;1&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;João Silva&amp;#34;&lt;/span>, &lt;span style="color:#e6db74">&amp;#34;joao.silva@exemplo.com&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Act&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> User result &lt;span style="color:#f92672">=&lt;/span> useCase.&lt;span style="color:#a6e22e">execute&lt;/span>(user);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Assert: lógica de negócio verificada, zero infraestrutura envolvida&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> assertNotNull(result);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> assertEquals(&lt;span style="color:#e6db74">&amp;#34;João Silva&amp;#34;&lt;/span>, result.&lt;span style="color:#a6e22e">getName&lt;/span>());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> assertEquals(1, fakeRepo.&lt;span style="color:#a6e22e">getStore&lt;/span>().&lt;span style="color:#a6e22e">size&lt;/span>());
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Como a abstração &lt;code>UserRepository&lt;/code> reside na camada de Domínio, o teste não importa nada da camada de Infraestrutura. Trocar &lt;code>JpaUserRepositoryAdapter&lt;/code> por &lt;code>InMemoryUserRepository&lt;/code> é trivial — basta passar uma implementação diferente ao construtor. Esse é o benefício do DIP: sua lógica de negócio é totalmente testável em isolamento, sem necessidade de um banco de dados em execução ou um contexto Spring carregado.&lt;/p>
+&lt;h2 id="benefícios-do-princípio-da-inversão-de-dependência">Benefícios do Princípio da Inversão de Dependência
+&lt;/h2>&lt;p>Aplicar o DIP, especialmente dentro da Clean Architecture, traz inúmeras vantagens:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Desacoplamento Aprimorado&lt;/strong>: Módulos de alto nível (Use Cases da Camada de Aplicação) são completamente independentes dos detalhes de implementação de baixo nível (Camada de Infraestrutura). Isso significa que mudanças na tecnologia de banco de dados ou em serviços externos não exigem alterações na lógica de negócio central ou nos fluxos da aplicação.&lt;/li>
+&lt;li>&lt;strong>Testabilidade Melhorada&lt;/strong>: Como os módulos de alto nível dependem de abstrações definidas na Camada de Domínio, é simples fornecer implementações mock ou stub dessas abstrações durante os testes unitários. Isso permite o teste isolado da lógica de negócio e dos use cases sem dependências externas.&lt;/li>
+&lt;li>&lt;strong>Maior Flexibilidade e Manutenibilidade&lt;/strong>: O sistema se torna mais adaptável a mudanças. Novas implementações de uma abstração podem ser introduzidas sem alterar os módulos de alto nível. Isso simplifica a manutenção e permite uma evolução mais fácil do sistema.&lt;/li>
+&lt;li>&lt;strong>Promove a Reusabilidade&lt;/strong>: A lógica de negócio central e os use cases da aplicação, livres de preocupações com infraestrutura, podem ser reutilizados em diferentes aplicações ou contextos de implantação.&lt;/li>
+&lt;li>&lt;strong>Arquitetura Mais Clara&lt;/strong>: O DIP impõe fronteiras claras entre as camadas, tornando a arquitetura mais fácil de entender e raciocinar.&lt;/li>
+&lt;/ul>
+&lt;h2 id="trade-offs-do-mundo-real-quando-o-dip-brilha-e-quando-não">Trade-offs do Mundo Real: Quando o DIP Brilha e Quando Não
+&lt;/h2>&lt;p>O DIP é uma ferramenta poderosa, mas como qualquer princípio de design, aplicá-lo indiscriminadamente pode introduzir complexidade desnecessária. Entender onde ele agrega mais valor — e onde pode ser excessivo — é fundamental para usá-lo com sabedoria.&lt;/p>
+&lt;p>&lt;strong>Quando o DIP é mais valioso&lt;/strong> é precisamente nas fronteiras entre sua lógica de negócio central e preocupações externas voláteis: bancos de dados, message brokers, APIs externas, serviços de e-mail, sistemas de arquivos. Todos esses são detalhes de implementação que mudam independentemente das suas regras de negócio. Abstraí-los por trás de uma interface isola seu domínio de mudanças e torna a troca de implementações (ex.: migrar de MySQL para MongoDB, ou de REST para gRPC) uma questão de escrever um novo adapter, em vez de reescrever seus use cases.&lt;/p>
+&lt;p>&lt;strong>Quando o DIP pode ser excessivo&lt;/strong> é quando você está criando interfaces para colaboradores internos e estáveis que jamais terão mais de uma implementação. Se uma classe &lt;code>UserValidator&lt;/code> não tem nenhuma implementação alternativa relevante e não é uma dependência externa, envolvê-la em uma interface apenas para &amp;ldquo;seguir o DIP&amp;rdquo; adiciona indireção sem benefício. O mesmo se aplica a classes utilitárias simples ou funções puras. Uma verificação mental útil: &lt;em>&amp;ldquo;Este é um detalhe que poderia mudar independentemente da minha lógica de negócio, ou que eu vou querer substituir por um fake nos testes?&amp;rdquo;&lt;/em> Se a resposta for não, uma interface provavelmente é desnecessária.&lt;/p>
+&lt;p>A super-abstração é um risco real. Uma base de código onde cada classe tem uma interface correspondente — independentemente de a interface servir a algum propósito arquitetural — se torna mais difícil de navegar, não mais fácil. O objetivo do DIP é o desacoplamento controlado em fronteiras significativas, não a proliferação indiscriminada de interfaces. Aplique-o com intenção e ele trará dividendos. Aplique-o reflexivamente e ele se tornará ruído.&lt;/p>
+&lt;h2 id="conclusão">Conclusão
+&lt;/h2>&lt;p>O Princípio da Inversão de Dependência é uma diretriz de design poderosa que muda fundamentalmente a forma como gerenciamos dependências no software. Ao garantir que tanto os módulos de alto nível quanto os de baixo nível dependam de abstrações, o DIP possibilita a criação de sistemas altamente desacoplados, flexíveis e testáveis.&lt;/p>
+&lt;p>Os principais aprendizados deste artigo são:&lt;/p>
+&lt;ul>
+&lt;li>O DIP é um &lt;strong>princípio de design&lt;/strong> sobre a &lt;em>direção&lt;/em> das dependências; a Injeção de Dependência é uma &lt;em>técnica&lt;/em> para implementá-lo.&lt;/li>
+&lt;li>Na Clean Architecture, a interface &lt;code>UserRepository&lt;/code> pertence à &lt;strong>camada de Domínio&lt;/strong> — de propriedade da política de alto nível, implementada pelo detalhe de baixo nível. Essa é a inversão.&lt;/li>
+&lt;li>O benefício prático é imediato: os use cases se tornam &lt;strong>trivialmente testáveis&lt;/strong> ao trocar o adapter real por um stub em memória, sem banco de dados ou framework necessários.&lt;/li>
+&lt;li>A conexão manual torna o mecanismo transparente; frameworks de DI como o Spring simplesmente o automatizam em larga escala.&lt;/li>
+&lt;li>O DIP é mais valioso nas &lt;strong>fronteiras voláteis&lt;/strong> (bancos de dados, APIs, serviços externos) e menos valioso quando aplicado reflexivamente a cada colaborador interno.&lt;/li>
+&lt;/ul>
+&lt;p>O DIP não existe sozinho — ele trabalha em conjunto com os outros princípios SOLID. O &lt;strong>Princípio da Responsabilidade Única&lt;/strong> garante que cada classe tenha apenas um motivo para mudar, o que facilita a definição de fronteiras de abstração claras. O &lt;strong>Princípio Aberto/Fechado&lt;/strong> é diretamente habilitado pelo DIP: como os módulos de alto nível dependem de abstrações, você pode estender o comportamento adicionando novas implementações sem modificar o código existente. O &lt;strong>Princípio da Segregação de Interfaces&lt;/strong> mantém essas abstrações enxutas e focadas, prevenindo o tipo de interfaces inchadas que solapariam a intenção do DIP.&lt;/p>
+&lt;p>Tomados em conjunto, esses princípios guiam você em direção a uma arquitetura onde a lógica de negócio é protegida, a infraestrutura é substituível e o sistema como um todo é resiliente a mudanças. Adotar o DIP nas fronteiras certas é um passo significativo em direção à construção de software que permanece manutenível, testável e escalável ao longo de sua evolução.&lt;/p>
+&lt;h2 id="referências">Referências
+&lt;/h2>&lt;p>[1] Martin, Robert C. &amp;ldquo;The Dependency Inversion Principle.&amp;rdquo; &lt;em>Object Mentor&lt;/em>, &lt;a class="link" href="http://www.objectmentor.com/resources/articles/dip.pdf" target="_blank" rel="noopener"
+>http://www.objectmentor.com/resources/articles/dip.pdf&lt;/a>.&lt;/p>
+&lt;p>[2] Martin, Robert C. &amp;ldquo;The Clean Architecture.&amp;rdquo; &lt;em>The Clean Code Blog&lt;/em>, &lt;a class="link" href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html" target="_blank" rel="noopener"
+>https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html&lt;/a>.&lt;/p>
+&lt;p>[3] Fowler, Martin. &amp;ldquo;Inversion of Control Containers and the Dependency Injection pattern.&amp;rdquo; &lt;em>martinfowler.com&lt;/em>, &lt;a class="link" href="https://martinfowler.com/articles/injection.html" target="_blank" rel="noopener"
+>https://martinfowler.com/articles/injection.html&lt;/a>.&lt;/p></description></item></channel></rss>

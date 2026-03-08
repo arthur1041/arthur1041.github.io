@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>C++ on Arthur Cruz</title><link>https://arthcruz.dev/en/tags/c++/</link><description>Recent content in C++ on Arthur Cruz</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Tue, 24 Feb 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/en/tags/c++/index.xml" rel="self" type="application/rss+xml"/><item><title>Shallow Copy vs Deep Copy: A Memory-Level Explanation</title><link>https://arthcruz.dev/en/posts/shallow-copy-vs-deep-copy-a-memory-level-explanation/</link><pubDate>Tue, 24 Feb 2026 00:00:00 +0000</pubDate><guid>https://arthcruz.dev/en/posts/shallow-copy-vs-deep-copy-a-memory-level-explanation/</guid><description>&lt;img src="https://arthcruz.dev/en/posts/shallow-copy-vs-deep-copy-a-memory-level-explanation/images/shallow_deep_copy_poster3.en.png" alt="Featured image of post Shallow Copy vs Deep Copy: A Memory-Level Explanation" />&lt;p>Understanding how data is copied in programming is fundamental to writing robust and predictable software. The distinction between &lt;strong>shallow copy&lt;/strong> and &lt;strong>deep copy&lt;/strong> is often a source of confusion, yet it is critical for managing memory, preventing unintended side effects, and ensuring data integrity. This article delves into the intricacies of these copying mechanisms, exploring their conceptual differences, language-specific implementations, and the underlying memory dynamics that govern their behavior.&lt;/p>
+&lt;h2 id="introduction-to-copying-mechanisms">Introduction to Copying Mechanisms
+&lt;/h2>&lt;p>When an object is copied, the operation essentially creates a new entity that, to varying degrees, resembles the original. The nature of this resemblance — whether it&amp;rsquo;s a mere replication of references or a complete duplication of all nested data — defines the type of copy performed. This distinction becomes particularly significant when dealing with complex data structures that contain other objects or collections.&lt;/p>
+&lt;h2 id="conceptual-differences-shallow-vs-deep">Conceptual Differences: Shallow vs. Deep
+&lt;/h2>&lt;h3 id="shallow-copy">Shallow Copy
+&lt;/h3>&lt;p>A &lt;strong>shallow copy&lt;/strong> creates a new object, but instead of duplicating nested objects, it copies their references. This means that the new object will have its own distinct memory address, but any mutable objects nested within it will still point to the same memory locations as those in the original object. Consequently, modifications to nested mutable objects in either the original or the copied structure will be reflected in both.&lt;/p>
+&lt;h3 id="deep-copy">Deep Copy
+&lt;/h3>&lt;p>A &lt;strong>deep copy&lt;/strong>, in contrast, creates a new object and recursively duplicates all nested objects. This results in a completely independent copy where no shared references exist between the original and the new object. Changes made to the deep copy, or its nested components, will not affect the original object, and vice-versa.&lt;/p>
+&lt;h2 id="memory-dynamics-stack-vs-heap-and-references">Memory Dynamics: Stack vs. Heap and References
+&lt;/h2>&lt;p>To fully grasp shallow and deep copies, it is essential to understand how memory is managed. The &lt;strong>stack&lt;/strong> is used for static memory allocation, primarily for primitive data types and function call frames. The &lt;strong>heap&lt;/strong> is used for dynamic memory allocation, where objects and complex data structures reside. Variables often store references (memory addresses) to objects on the heap.&lt;/p>
+&lt;h3 id="pointerreference-semantics">Pointer/Reference Semantics
+&lt;/h3>&lt;p>In many languages, variables do not directly hold complex objects but rather &lt;strong>references&lt;/strong> or &lt;strong>pointers&lt;/strong> to their locations in memory. When a shallow copy occurs, it is these references that are duplicated, not the objects they point to. A deep copy, however, dereferences these pointers and creates new objects at new memory locations for each nested component.&lt;/p>
+&lt;h3 id="mutability-vs-immutability">Mutability vs. Immutability
+&lt;/h3>&lt;p>&lt;strong>Mutability&lt;/strong> refers to the ability of an object to be changed after it has been created. Objects like lists, dictionaries, and custom class instances are typically mutable. &lt;strong>Immutability&lt;/strong> means an object cannot be altered after creation (e.g., strings, numbers, tuples in Python). The implications of shallow and deep copies are most pronounced with mutable nested objects, as changes to shared mutable components can lead to unexpected behavior.&lt;/p>
+&lt;h2 id="visualizing-memory-ascii-diagrams">Visualizing Memory: ASCII Diagrams
+&lt;/h2>&lt;p>Consider an object &lt;code>A&lt;/code> containing a mutable nested object &lt;code>B&lt;/code>.&lt;/p>
+&lt;h3 id="original-object">Original Object
+&lt;/h3>&lt;pre tabindex="0">&lt;code>Stack: Heap:
++---+ +-------------------+
+| A | -------&amp;gt; | Object A |
++---+ | +-------------+ |
+| | ref to B | ---&amp;gt; +-------------------+
+| +-------------+ | | Object B |
++-------------------+ | Value: 10 |
++-------------------+
+&lt;/code>&lt;/pre>&lt;h3 id="shallow-copy-1">Shallow Copy
+&lt;/h3>&lt;p>When &lt;code>A_shallow = shallow_copy(A)&lt;/code>:&lt;/p>
+&lt;pre tabindex="0">&lt;code>Stack: Heap:
++---+ +-------------------+
+| A | -------&amp;gt; | Object A |
++---+ | +-------------+ |
+| | ref to B | ---&amp;gt; +-------------------+
+| +-------------+ | | Object B |
++-----------+ +-------------------+ | Value: 10 |
+| A_shallow | --+-------------------+ +-------------------+
++-----------+ | Object A_shallow |
+| +-------------+ |
+| | ref to B | --^
+| +-------------+ |
++-------------------+
+&lt;/code>&lt;/pre>&lt;p>Notice that &lt;code>Object B&lt;/code> is shared. Modifying &lt;code>Object B&lt;/code> through &lt;code>A&lt;/code> or &lt;code>A_shallow&lt;/code> will affect both.&lt;/p>
+&lt;h3 id="deep-copy-1">Deep Copy
+&lt;/h3>&lt;p>When &lt;code>A_deep = deep_copy(A)&lt;/code>:&lt;/p>
+&lt;pre tabindex="0">&lt;code>Stack: Heap:
++---+ +-------------------+
+| A | -------&amp;gt; | Object A |
++---+ | +-------------+ |
+| | ref to B | ---&amp;gt; +-------------------+
+| +-------------+ | | Object B |
++-------------------+ | Value: 10 |
++-------------------+
++---------+ +-------------------+
+| A_deep | --&amp;gt;| Object A_deep |
++---------+ | +-------------+ |
+| | ref to B_new| ---&amp;gt; +-------------------+
+| +-------------+ | | Object B_new |
++-------------------+ | Value: 10 |
++-------------------+
+&lt;/code>&lt;/pre>&lt;p>Here, &lt;code>Object B&lt;/code> and &lt;code>Object B_new&lt;/code> are entirely separate entities.&lt;/p>
+&lt;h2 id="language-specific-implementations-and-examples">Language-Specific Implementations and Examples
+&lt;/h2>&lt;h3 id="python">Python
+&lt;/h3>&lt;p>Python&amp;rsquo;s &lt;code>copy&lt;/code> module provides &lt;code>copy()&lt;/code> for shallow copies and &lt;code>deepcopy()&lt;/code> for deep copies. For custom objects, &lt;code>__copy__&lt;/code> and &lt;code>__deepcopy__&lt;/code> methods can be implemented.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-python" data-lang="python">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> copy
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>original_list &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, [&lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>], &lt;span style="color:#ae81ff">4&lt;/span>]
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Shallow Copy&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>shallow_copied_list &lt;span style="color:#f92672">=&lt;/span> copy&lt;span style="color:#f92672">.&lt;/span>copy(original_list)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>shallow_copied_list[&lt;span style="color:#ae81ff">1&lt;/span>][&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">99&lt;/span> &lt;span style="color:#75715e"># Modifies nested list in both&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(original_list) &lt;span style="color:#75715e"># Output: [1, [99, 3], 4]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(shallow_copied_list) &lt;span style="color:#75715e"># Output: [1, [99, 3], 4]&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e"># Deep Copy&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deep_copied_list &lt;span style="color:#f92672">=&lt;/span> copy&lt;span style="color:#f92672">.&lt;/span>deepcopy(original_list)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>deep_copied_list[&lt;span style="color:#ae81ff">1&lt;/span>][&lt;span style="color:#ae81ff">0&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span> &lt;span style="color:#75715e"># Modifies only the deep copy&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(original_list) &lt;span style="color:#75715e"># Output: [1, [99, 3], 4] (original remains unchanged)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>print(deep_copied_list) &lt;span style="color:#75715e"># Output: [1, [100, 3], 4]&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="java">Java
+&lt;/h3>&lt;p>In Java, &lt;code>Object.clone()&lt;/code> performs a shallow copy by default. To achieve a deep copy, one must manually implement the &lt;code>Cloneable&lt;/code> interface and override the &lt;code>clone()&lt;/code> method to recursively clone mutable fields, or use serialization.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-java" data-lang="java">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Course&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String name;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">Course&lt;/span>(String name) { &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> name; }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Student&lt;/span> &lt;span style="color:#66d9ef">implements&lt;/span> Cloneable {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> String studentName;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course course;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#a6e22e">Student&lt;/span>(String studentName, Course course) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">studentName&lt;/span> &lt;span style="color:#f92672">=&lt;/span> studentName;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">course&lt;/span> &lt;span style="color:#f92672">=&lt;/span> course;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Shallow copy via default clone()&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">@Override&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">protected&lt;/span> Object &lt;span style="color:#a6e22e">clone&lt;/span>() &lt;span style="color:#66d9ef">throws&lt;/span> CloneNotSupportedException {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#66d9ef">super&lt;/span>.&lt;span style="color:#a6e22e">clone&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Deep copy implementation (manual)&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> Student &lt;span style="color:#a6e22e">deepCopy&lt;/span>() &lt;span style="color:#66d9ef">throws&lt;/span> CloneNotSupportedException {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student clonedStudent &lt;span style="color:#f92672">=&lt;/span> (Student) &lt;span style="color:#66d9ef">super&lt;/span>.&lt;span style="color:#a6e22e">clone&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> clonedStudent.&lt;span style="color:#a6e22e">course&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#66d9ef">this&lt;/span>.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span>); &lt;span style="color:#75715e">// Deep copy the Course object&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> clonedStudent;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">public&lt;/span> &lt;span style="color:#66d9ef">static&lt;/span> &lt;span style="color:#66d9ef">void&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>(String&lt;span style="color:#f92672">[]&lt;/span> args) &lt;span style="color:#66d9ef">throws&lt;/span> CloneNotSupportedException {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course math &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;Math&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Student(&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, math);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Shallow Copy&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student shallowCopyStudent &lt;span style="color:#f92672">=&lt;/span> (Student) originalStudent.&lt;span style="color:#a6e22e">clone&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> shallowCopyStudent.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Physics&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Changes originalStudent.course.name too&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> System.&lt;span style="color:#a6e22e">out&lt;/span>.&lt;span style="color:#a6e22e">println&lt;/span>(originalStudent.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span>); &lt;span style="color:#75715e">// Output: Physics&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Deep Copy&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course history &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;History&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent2 &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Student(&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, history);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student deepCopyStudent &lt;span style="color:#f92672">=&lt;/span> originalStudent2.&lt;span style="color:#a6e22e">deepCopy&lt;/span>();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deepCopyStudent.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Chemistry&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Only changes deepCopyStudent.course.name&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> System.&lt;span style="color:#a6e22e">out&lt;/span>.&lt;span style="color:#a6e22e">println&lt;/span>(originalStudent2.&lt;span style="color:#a6e22e">course&lt;/span>.&lt;span style="color:#a6e22e">name&lt;/span>); &lt;span style="color:#75715e">// Output: History&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="javascript">JavaScript
+&lt;/h3>&lt;p>JavaScript lacks a built-in deep copy function. Shallow copies can be achieved using the spread operator (&lt;code>...&lt;/code>), &lt;code>Object.assign()&lt;/code>, or &lt;code>Array.prototype.slice()&lt;/code>. Deep copies typically require &lt;code>JSON.parse(JSON.stringify())&lt;/code> (with limitations for functions, &lt;code>undefined&lt;/code>, &lt;code>Date&lt;/code> objects, etc.) or external libraries like Lodash&amp;rsquo;s &lt;code>_.cloneDeep()&lt;/code>.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-javascript" data-lang="javascript">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">originalObject&lt;/span> &lt;span style="color:#f92672">=&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">a&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">b&lt;/span>&lt;span style="color:#f92672">:&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">c&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Shallow Copy
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">shallowCopyObject&lt;/span> &lt;span style="color:#f92672">=&lt;/span> { ...&lt;span style="color:#a6e22e">originalObject&lt;/span> };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">shallowCopyObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">99&lt;/span>; &lt;span style="color:#75715e">// Modifies originalObject.b.c too
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#a6e22e">originalObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span>); &lt;span style="color:#75715e">// Output: 99
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// Deep Copy (with JSON serialization limitation)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">deepCopyObject&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#a6e22e">JSON&lt;/span>.&lt;span style="color:#a6e22e">parse&lt;/span>(&lt;span style="color:#a6e22e">JSON&lt;/span>.&lt;span style="color:#a6e22e">stringify&lt;/span>(&lt;span style="color:#a6e22e">originalObject&lt;/span>));
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">deepCopyObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span>; &lt;span style="color:#75715e">// Only modifies deepCopyObject.b.c
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">console&lt;/span>.&lt;span style="color:#a6e22e">log&lt;/span>(&lt;span style="color:#a6e22e">originalObject&lt;/span>.&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">c&lt;/span>); &lt;span style="color:#75715e">// Output: 99 (original remains unchanged)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="go">Go
+&lt;/h3>&lt;p>In Go, assignment (&lt;code>=&lt;/code>) creates a shallow copy for structs. Slices and maps are reference types, so assigning them also creates a shallow copy of the reference. Deep copying requires manual iteration or custom serialization/deserialization.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-go" data-lang="go">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">package&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#f92672">import&lt;/span> (
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#e6db74">&amp;#34;fmt&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>)
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">City&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span> &lt;span style="color:#66d9ef">struct&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Name&lt;/span> &lt;span style="color:#66d9ef">string&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span> &lt;span style="color:#75715e">// Pointer to Address
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">func&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">originalAddress&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;New York&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">originalPerson&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">originalAddress&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Shallow Copy (struct assignment)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">shallowCopyPerson&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">originalPerson&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">shallowCopyPerson&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span> = &lt;span style="color:#e6db74">&amp;#34;London&amp;#34;&lt;/span> &lt;span style="color:#75715e">// Modifies originalPerson.Address.City too
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">originalPerson&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span>) &lt;span style="color:#75715e">// Output: London
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Deep Copy (manual)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">originalAddress2&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;Paris&amp;#34;&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">originalPerson2&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span>{&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, &lt;span style="color:#a6e22e">originalAddress2&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">deepCopyAddress&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#f92672">&amp;amp;&lt;/span>&lt;span style="color:#a6e22e">Address&lt;/span>{&lt;span style="color:#a6e22e">originalPerson2&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">deepCopyPerson&lt;/span> &lt;span style="color:#f92672">:=&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span>{&lt;span style="color:#a6e22e">originalPerson2&lt;/span>.&lt;span style="color:#a6e22e">Name&lt;/span>, &lt;span style="color:#a6e22e">deepCopyAddress&lt;/span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#a6e22e">deepCopyPerson&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span> = &lt;span style="color:#e6db74">&amp;#34;Rome&amp;#34;&lt;/span> &lt;span style="color:#75715e">// Only modifies deepCopyPerson.Address.City
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#a6e22e">fmt&lt;/span>.&lt;span style="color:#a6e22e">Println&lt;/span>(&lt;span style="color:#a6e22e">originalPerson2&lt;/span>.&lt;span style="color:#a6e22e">Address&lt;/span>.&lt;span style="color:#a6e22e">City&lt;/span>) &lt;span style="color:#75715e">// Output: Paris
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="c">C++
+&lt;/h3>&lt;p>In C++, assignment (&lt;code>=&lt;/code>) for custom classes performs a shallow copy by default (member-wise copy). To achieve deep copy, a custom copy constructor and copy assignment operator must be implemented to handle dynamic memory allocation and recursively copy nested objects. The Rule of Three/Five/Zero applies here.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-cpp" data-lang="cpp">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;iostream&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#include&lt;/span> &lt;span style="color:#75715e">&amp;lt;string&amp;gt;&lt;/span>&lt;span style="color:#75715e">
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Course&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>string name;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course(std&lt;span style="color:#f92672">::&lt;/span>string n) &lt;span style="color:#f92672">:&lt;/span> name(n) {}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">class&lt;/span> &lt;span style="color:#a6e22e">Student&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">public&lt;/span>&lt;span style="color:#f92672">:&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>string studentName;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course&lt;span style="color:#f92672">*&lt;/span> course; &lt;span style="color:#75715e">// Pointer to Course
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student(std&lt;span style="color:#f92672">::&lt;/span>string sn, Course&lt;span style="color:#f92672">*&lt;/span> c) &lt;span style="color:#f92672">:&lt;/span> studentName(sn), course(c) {}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Default copy constructor (shallow copy)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Student(&lt;span style="color:#66d9ef">const&lt;/span> Student&lt;span style="color:#f92672">&amp;amp;&lt;/span> other) &lt;span style="color:#f92672">:&lt;/span> studentName(other.studentName), course(other.course) {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Shallow copy constructor called&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Deep copy constructor
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Student &lt;span style="color:#a6e22e">deepCopy&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Deep copy performed&lt;/span>&lt;span style="color:#ae81ff">\n&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> Student(&lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>studentName, &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#f92672">*&lt;/span>&lt;span style="color:#66d9ef">this&lt;/span>&lt;span style="color:#f92672">-&amp;gt;&lt;/span>course)); &lt;span style="color:#75715e">// Create new Course object
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">~&lt;/span>Student() { &lt;span style="color:#75715e">// Destructor to free memory for course
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Only delete if this object owns the course pointer
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// This highlights the complexity of manual memory management with shallow/deep copies
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// For simplicity, in this example, we&amp;#39;ll assume ownership for deepCopy()
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// In real-world C++, smart pointers are preferred.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// delete course;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> }
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>};
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Course&lt;span style="color:#f92672">*&lt;/span> math &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;Math&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent(&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>, math);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Shallow Copy (using default copy constructor)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Student shallowCopyStudent &lt;span style="color:#f92672">=&lt;/span> originalStudent; &lt;span style="color:#75715e">// Calls copy constructor
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> shallowCopyStudent.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Physics&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Modifies originalStudent.course-&amp;gt;name too
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> originalStudent.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl; &lt;span style="color:#75715e">// Output: Physics
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Deep Copy
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> Course&lt;span style="color:#f92672">*&lt;/span> history &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> Course(&lt;span style="color:#e6db74">&amp;#34;History&amp;#34;&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student originalStudent2(&lt;span style="color:#e6db74">&amp;#34;Bob&amp;#34;&lt;/span>, history);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> Student deepCopyStudent &lt;span style="color:#f92672">=&lt;/span> originalStudent2.deepCopy();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deepCopyStudent.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#34;Chemistry&amp;#34;&lt;/span>; &lt;span style="color:#75715e">// Only modifies deepCopyStudent.course-&amp;gt;name
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>cout &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> originalStudent2.course&lt;span style="color:#f92672">-&amp;gt;&lt;/span>name &lt;span style="color:#f92672">&amp;lt;&amp;lt;&lt;/span> std&lt;span style="color:#f92672">::&lt;/span>endl; &lt;span style="color:#75715e">// Output: History
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">delete&lt;/span> math;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">delete&lt;/span> history;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Note: deepCopyStudent.course also needs to be deleted if not using smart pointers
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// delete deepCopyStudent.course; // This would be needed in a complete example
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">return&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h3 id="rust">Rust
+&lt;/h3>&lt;p>Rust distinguishes between &lt;code>Copy&lt;/code> and &lt;code>Clone&lt;/code> traits. The &lt;code>Copy&lt;/code> trait is for types that can be duplicated by simply copying bits (e.g., primitive types, structs containing only &lt;code>Copy&lt;/code> types). The &lt;code>Clone&lt;/code> trait is for types that require a deep copy, and it must be explicitly implemented. For types that implement &lt;code>Copy&lt;/code>, assignment performs a bitwise copy. For types that implement &lt;code>Clone&lt;/code>, the &lt;code>clone()&lt;/code> method performs a deep copy by convention.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-rust" data-lang="rust">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#[derive(Debug, Clone)]&lt;/span> &lt;span style="color:#75715e">// Derive Clone for deep copy
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">struct&lt;/span> &lt;span style="color:#a6e22e">Address&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> city: String,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">#[derive(Debug, Clone)]&lt;/span> &lt;span style="color:#75715e">// Derive Clone for deep copy
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">struct&lt;/span> &lt;span style="color:#a6e22e">Person&lt;/span> {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> name: String,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> address: &lt;span style="color:#a6e22e">Address&lt;/span>,
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">fn&lt;/span> &lt;span style="color:#a6e22e">main&lt;/span>() {
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> original_address &lt;span style="color:#f92672">=&lt;/span> Address { city: String::from(&lt;span style="color:#e6db74">&amp;#34;New York&amp;#34;&lt;/span>) };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> original_person &lt;span style="color:#f92672">=&lt;/span> Person { name: String::from(&lt;span style="color:#e6db74">&amp;#34;Alice&amp;#34;&lt;/span>), address: &lt;span style="color:#a6e22e">original_address&lt;/span>.clone() };
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Shallow Copy (assignment for types that are not Copy, like String, means move)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// For structs with non-Copy fields, assignment is a move, not a shallow copy.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// To demonstrate shallow copy behavior, we need to explicitly clone the outer struct
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// but not the inner mutable parts, which is not idiomatic Rust for mutable data.
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#75715e">// Rust&amp;#39;s ownership system makes direct
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>shallow copy difficult to illustrate without violating ownership rules. Instead, we&lt;span style="color:#a6e22e">&amp;#39;ll&lt;/span> focus on &lt;span style="color:#960050;background-color:#1e0010">`&lt;/span>Clone&lt;span style="color:#960050;background-color:#1e0010">`&lt;/span> &lt;span style="color:#66d9ef">for&lt;/span> deep copying.
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Deep Copy using Clone trait
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">let&lt;/span> deep_copy_person &lt;span style="color:#f92672">=&lt;/span> original_person.clone();
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> deep_copy_person.address.city &lt;span style="color:#f92672">=&lt;/span> String::from(&lt;span style="color:#e6db74">&amp;#34;London&amp;#34;&lt;/span>); &lt;span style="color:#75715e">// Only modifies deep_copy_person
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;Original person: &lt;/span>&lt;span style="color:#e6db74">{:?}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, original_person); &lt;span style="color:#75715e">// Output: Original person: Person { name: &amp;#34;Alice&amp;#34;, address: Address { city: &amp;#34;New York&amp;#34; } }
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;Deep copy person: &lt;/span>&lt;span style="color:#e6db74">{:?}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, deep_copy_person); &lt;span style="color:#75715e">// Output: Deep copy person: Person { name: &amp;#34;Alice&amp;#34;, address: Address { city: &amp;#34;London&amp;#34; } }
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#75715e">// Example with Copy trait (for primitive types)
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#66d9ef">let&lt;/span> x &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#66d9ef">let&lt;/span> y &lt;span style="color:#f92672">=&lt;/span> x; &lt;span style="color:#75715e">// y is a copy of x, x is still valid
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> println!(&lt;span style="color:#e6db74">&amp;#34;x: &lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">, y: &lt;/span>&lt;span style="color:#e6db74">{}&lt;/span>&lt;span style="color:#e6db74">&amp;#34;&lt;/span>, x, y);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>}
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;h2 id="binary-level-analysis">Binary-Level Analysis
+&lt;/h2>&lt;p>At the lowest level, memory is a contiguous sequence of bytes. Variables hold values, which can be either the data itself (for primitives) or a memory address (for references/pointers to objects).&lt;/p>
+&lt;p>When a shallow copy occurs, the bytes representing the &lt;em>references&lt;/em> to nested objects are copied. The actual data bytes of the nested objects are not duplicated. This means two distinct objects now contain identical memory addresses pointing to the same underlying data structure.&lt;/p>
+&lt;p>For a deep copy, the process is more involved. It entails traversing the object graph, starting from the top-level object. For each nested object encountered, new memory is allocated on the heap, and the data from the original nested object is copied byte-for-byte into this new memory location. This recursive process ensures that all components of the new object are distinct from the original, residing in their own allocated memory segments.&lt;/p>
+&lt;h3 id="stack-vs-heap-revisited">Stack vs. Heap Revisited
+&lt;/h3>&lt;ul>
+&lt;li>&lt;strong>Stack&lt;/strong>: Stores local variables, function parameters, and return addresses. Memory allocation/deallocation is automatic and fast. Primitive values are often stored directly on the stack.&lt;/li>
+&lt;li>&lt;strong>Heap&lt;/strong>: Stores dynamically allocated objects and data structures whose size might not be known at compile time or whose lifetime extends beyond the scope of a single function call. Objects created with &lt;code>new&lt;/code> (Java, C++), &lt;code>malloc&lt;/code> (C), or implicitly (Python, JavaScript) reside here. Variables on the stack often hold pointers to these heap-allocated objects.&lt;/li>
+&lt;/ul>
+&lt;p>A shallow copy duplicates the stack-allocated reference, but the heap-allocated object remains singular. A deep copy involves new heap allocations for all duplicated objects.&lt;/p>
+&lt;h2 id="performance-considerations">Performance Considerations
+&lt;/h2>&lt;ul>
+&lt;li>&lt;strong>Shallow Copy&lt;/strong>: Generally faster as it only involves copying references (pointers), which is a fixed-size operation regardless of the complexity of the nested objects. It does not require additional memory allocation for nested data.&lt;/li>
+&lt;li>&lt;strong>Deep Copy&lt;/strong>: Can be significantly slower and consume more memory, especially for large and deeply nested object graphs. It involves recursive traversal, new memory allocations for each nested object, and byte-by-byte data copying. The performance impact can be substantial, making it a consideration for performance-critical applications.&lt;/li>
+&lt;/ul>
+&lt;h2 id="real-world-bugs-caused-by-shallow-copies">Real-World Bugs Caused by Shallow Copies
+&lt;/h2>&lt;p>Shallow copies are a common source of subtle bugs, particularly when developers are unaware of the shared references. Examples include:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Unexpected State Changes&lt;/strong>: Modifying a configuration object that was shallow-copied from a default template. Any changes to nested lists or dictionaries in the copied configuration inadvertently alter the default template, affecting other parts of the application that rely on the original default.&lt;/li>
+&lt;li>&lt;strong>Data Corruption in Multi-threaded Environments&lt;/strong>: In concurrent programming, if multiple threads operate on shallow copies of an object, and those copies share mutable nested data, race conditions can occur, leading to data corruption or inconsistent states.&lt;/li>
+&lt;li>&lt;strong>UI Component Re-rendering Issues&lt;/strong>: In front-end frameworks, if a component receives a shallow copy of props containing mutable objects, and those nested objects are modified directly, the framework might not detect a change in props (because the reference itself hasn&amp;rsquo;t changed), failing to re-render the component with the updated data.&lt;/li>
+&lt;/ol>
+&lt;h2 id="when-deep-copy-is-a-code-smell">When Deep Copy is a Code Smell
+&lt;/h2>&lt;p>While deep copies provide complete independence, their overuse can indicate a &lt;strong>code smell&lt;/strong>:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Performance Overhead&lt;/strong>: As noted, deep copying can be expensive. If a deep copy is performed frequently on large data structures without a clear need for complete independence, it can become a performance bottleneck.&lt;/li>
+&lt;li>&lt;strong>Increased Memory Consumption&lt;/strong>: Duplicating entire object graphs consumes significantly more memory. Excessive deep copying can lead to higher memory usage and potentially out-of-memory errors.&lt;/li>
+&lt;li>&lt;strong>Complexity and Maintenance&lt;/strong>: Implementing custom deep copy logic (especially in languages without built-in support) can be complex and error-prone. It adds boilerplate code and increases the maintenance burden.&lt;/li>
+&lt;li>&lt;strong>Breaking Object Identity&lt;/strong>: If object identity is crucial (e.g., for caching, unique identifiers, or graph structures), deep copying can break these relationships by creating new, distinct objects.&lt;/li>
+&lt;/ul>
+&lt;p>Often, a need for deep copy suggests that the object&amp;rsquo;s design might be problematic, or that the data flow could be managed more effectively, perhaps through immutable data structures or clearer ownership semantics.&lt;/p>
+&lt;h2 id="when-to-use-each-type-of-copy">When to Use Each Type of Copy
+&lt;/h2>&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align:left">Feature&lt;/th>
+&lt;th style="text-align:left">Shallow Copy&lt;/th>
+&lt;th style="text-align:left">Deep Copy&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Independence&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">New object, but nested mutable objects are shared&lt;/td>
+&lt;td style="text-align:left">Completely independent object and all its nested data&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Performance&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Faster (copies references)&lt;/td>
+&lt;td style="text-align:left">Slower (recursive, allocates new memory)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Memory Usage&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Lower (shares nested data)&lt;/td>
+&lt;td style="text-align:left">Higher (duplicates all nested data)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Use Cases&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Copying simple objects, immutable nested data, or when shared references are desired&lt;/td>
+&lt;td style="text-align:left">When complete isolation from the original is required, especially with mutable nested objects&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align:left">&lt;strong>Side Effects&lt;/strong>&lt;/td>
+&lt;td style="text-align:left">Changes to nested mutable objects affect both original and copy&lt;/td>
+&lt;td style="text-align:left">Changes only affect the copied object&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;h2 id="conclusion">Conclusion
+&lt;/h2>&lt;p>The choice between a shallow and a deep copy is not arbitrary; it is a deliberate design decision with significant implications for program behavior, performance, and memory usage. A shallow copy is efficient for simple objects or when shared references to nested mutable data are acceptable or even desired. Conversely, a deep copy is essential when complete independence from the original object, including all its nested components, is paramount. A thorough understanding of these copying mechanisms, coupled with an awareness of memory management and language-specific behaviors, empowers developers to make informed choices, prevent subtle bugs, and build more robust and maintainable software systems.&lt;/p></description></item></channel></rss>
