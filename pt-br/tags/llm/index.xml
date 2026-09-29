@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>LLM on Arthur Cruz</title><link>https://arthcruz.dev/pt-br/tags/llm/</link><description>Recent content in LLM on Arthur Cruz</description><generator>Hugo -- gohugo.io</generator><language>pt-br</language><lastBuildDate>Tue, 29 Sep 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://arthcruz.dev/pt-br/tags/llm/index.xml" rel="self" type="application/rss+xml"/><item><title>Liguei o Cache para Economizar. Saiu Mais Caro.</title><link>https://arthcruz.dev/pt-br/posts/i-turned-on-caching-to-save-money-it-cost-me-more/</link><pubDate>Tue, 29 Sep 2026 00:00:00 +0000</pubDate><guid>https://arthcruz.dev/pt-br/posts/i-turned-on-caching-to-save-money-it-cost-me-more/</guid><description>&lt;img src="https://arthcruz.dev/pt-br/posts/i-turned-on-caching-to-save-money-it-cost-me-more/images/poster.pt-br.png" alt="Featured image of post Liguei o Cache para Economizar. Saiu Mais Caro." />&lt;h2 id="1-o-número-e-por-que-o-número-não-é-o-ponto">1. O número, e por que o número não é o ponto
+&lt;/h2>&lt;p>Entre 11 e 12 de agosto de 2026, minha conta do Vertex AI subiu R$ 252 em cerca de dois dias. O detalhe que faz a diferença: o produto era um MVP que ainda nem faturava, com um punhado de pessoas testando na mão. Praticamente ninguém estava usando.&lt;/p>
+&lt;p>O que fazia aquilo valer uma investigação não era o tamanho do número, era o gasto ter se descolado do uso. Uma conta que acompanha o tráfego é o caso tranquilo: com quase ninguém usando o produto ela fica perto de zero, e qualquer coisa que a faça subir tem uma causa que dá para apontar. Essa estava subindo com praticamente ninguém usando. Alguma coisa me cobrava no ritmo dela, não no meu, e como eu não sabia o quê, também não tinha como saber onde aquilo ia parar.&lt;/p>
+&lt;p>A causa era um cache. Especificamente, um que eu tinha ligado para testar uma ideia, que funcionou exatamente como eu esperava, e que eu depois esqueci que continuava ligado.&lt;/p>
+&lt;h2 id="2-o-que-o-sistema-estava-fazendo">2. O que o sistema estava fazendo
+&lt;/h2>&lt;p>O produto é um chat commerce para supermercados, da &lt;a class="link" href="https://telazul.tech/" target="_blank" rel="noopener"
+>Tela Azul&lt;/a>. Você escreve algo como &amp;ldquo;churrasco para 10 pessoas&amp;rdquo; e ele monta o carrinho: produtos reais, ids reais, preços reais, de um catálogo com cerca de &lt;strong>9 mil itens&lt;/strong>.&lt;/p>
+&lt;p>Essa última restrição é todo o problema de desenho. O modelo não pode inventar produto. Ele tem que escolher do catálogo, &lt;strong>pelo id&lt;/strong>, porque os nomes repetem (o mesmo produto aparece em promoção e fora dela). A primeira versão funcional resolveu isso da forma mais direta possível: &lt;strong>mandar o catálogo inteiro em cada requisição&lt;/strong>.&lt;/p>
+&lt;p>Comprimido, o catálogo inteiro dava aproximadamente &lt;strong>363 mil tokens de entrada por mensagem&lt;/strong>. Funcionava, e a precisão era boa, porque o modelo via de fato todas as opções entre as quais escolhia. Mas 363 mil tokens de entrada por mensagem não é um número que dá para deixar como está.&lt;/p>
+&lt;h2 id="3-por-que-eu-liguei-o-cache">3. Por que eu liguei o cache
+&lt;/h2>&lt;p>O Vertex AI suporta cache de contexto explícito: você sobe o conteúdo uma vez, recebe de volta um handle &lt;code>cachedContent&lt;/code> e referencia esse handle nas requisições seguintes em vez de reenviar o conteúdo.&lt;/p>
+&lt;p>O raciocínio parecia à prova de balas. O catálogo é idêntico de uma requisição para a outra. Pague aqueles 363 mil tokens uma vez, aponte para eles depois, pare de pagar por mensagem. O código ganhou um segundo modo exatamente para isso, com o inline como fallback:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-ts" data-lang="ts">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">export&lt;/span> &lt;span style="color:#66d9ef">type&lt;/span> &lt;span style="color:#a6e22e">CatalogContext&lt;/span> &lt;span style="color:#f92672">=&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span> &lt;span style="color:#f92672">|&lt;/span> { &lt;span style="color:#a6e22e">mode&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;cache&amp;#39;&lt;/span>; &lt;span style="color:#a6e22e">cachedContent&lt;/span>: &lt;span style="color:#66d9ef">string&lt;/span>; &lt;span style="color:#75715e">/* ... */&lt;/span> } &lt;span style="color:#75715e">// preferencial
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span> &lt;span style="color:#f92672">|&lt;/span> { &lt;span style="color:#a6e22e">mode&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#e6db74">&amp;#39;inline&amp;#39;&lt;/span>; &lt;span style="color:#a6e22e">systemInstruction&lt;/span>: &lt;span style="color:#66d9ef">string&lt;/span>; &lt;span style="color:#75715e">/* ... */&lt;/span> };
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Liguei como experimento, não como decisão fechada. E funcionou: o catálogo parou de ser reenviado a cada mensagem, a entrada por mensagem despencou e o teste respondeu o que eu queria saber. Aí parti para a próxima coisa e deixei ligado.&lt;/p>
+&lt;p>Essa é a parte da história que importa. Uma feature flag fica parada esperando por você. Um cache explícito não: ele tem um taxímetro rodando, e o meu seguiu rodando por dias enquanto eu estava ocupado com outra coisa.&lt;/p>
+&lt;p>Quero ser preciso sobre o erro aqui, porque não foi um erro de código. O código fez exatamente o que eu mandei. O que estava errado era meu modelo de como a funcionalidade é &lt;strong>cobrada&lt;/strong>, e quanto tempo eu deixei aquilo ligado sem olhar depois que o teste já tinha me dado a resposta.&lt;/p>
+&lt;h2 id="4-como-o-cache-explícito-é-cobrado-de-verdade">4. Como o cache explícito é cobrado de verdade
+&lt;/h2>&lt;p>Um cache explícito não é um desconto. É um aluguel, e tem três linhas separadas:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>linha&lt;/th>
+&lt;th>quando você paga&lt;/th>
+&lt;th>o que determina o valor&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;strong>criação&lt;/strong>&lt;/td>
+&lt;td>toda vez que um cache é criado&lt;/td>
+&lt;td>os tokens que você coloca dentro, cobrados uma vez ao preço de entrada normal (aqui: 363 mil deles)&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>armazenamento&lt;/strong>&lt;/td>
+&lt;td>por hora de vida do cache&lt;/td>
+&lt;td>tokens guardados &lt;strong>× tempo de relógio&lt;/strong>, proporcional ao minuto, com ou sem alguém lendo&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;strong>leitura&lt;/strong>&lt;/td>
+&lt;td>em cada requisição que referencia o cache&lt;/td>
+&lt;td>com desconto forte em relação ao token de entrada normal&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Meu modelo mental continha só a terceira linha, a leitura com desconto. É a linha que todo mundo cita quando compara modelos. As outras duas foram por onde meu dinheiro saiu.&lt;/p>
+&lt;p>Vale reler a linha do armazenamento: ela é cobrada &lt;strong>por hora de vida do cache&lt;/strong>, independente de tráfego. Um cache explícito com 363 mil tokens custa a mesma coisa às 4 da manhã, com zero requisição, e sob carga.&lt;/p>
+&lt;h2 id="5-a-investigação-e-para-onde-olhei-primeiro">5. A investigação, e para onde olhei primeiro
+&lt;/h2>&lt;p>O budget alert que eu tinha configurado em R$ 100 disparou primeiro. Ele me disse que o total tinha se mexido, que é a única coisa que um limiar sobre uma soma consegue dizer, então abri a página de billing do GCP para ver o formato daquilo. O que estava lá não era um total, era uma curva: o gasto diário subindo a um ritmo que não fazia sentido para a quantidade de gente usando o app, e subindo havia dois dias. A essa altura o cache tinha deixado de ser uma coisa em que eu pensava, então ele nem passou pela minha cabeça como suspeito.&lt;/p>
+&lt;p>Minha primeira suspeita foi &lt;strong>voz&lt;/strong>, e continuo achando que era o primeiro palpite razoável. O text-to-speech é de longe o item mais caro do sistema: o áudio de saída era cobrado a cerca de US$ 10 por 1M de tokens quando eu medi isso, uma ordem de grandeza acima de qualquer outra coisa na stack, e o custo escala com o comprimento do texto que o cliente manda. Tanto &lt;code>/api/tts&lt;/code> quanto &lt;code>/api/transcribe&lt;/code> aceitavam payload do cliente &lt;strong>sem teto de tamanho&lt;/strong>, sem autenticação e sem nenhum conceito de sessão no app. Se algo fosse torrar dinheiro nesse sistema, era esse o candidato. Rate limit não salva ninguém quando uma única requisição pode carregar 50 mil caracteres.&lt;/p>
+&lt;p>Então fui ao log de eventos. O log não respondeu nada.&lt;/p>
+&lt;p>O backup de 13 de agosto tinha &lt;strong>424 eventos gravados, todos eles &lt;code>kind: 'chat'&lt;/code>&lt;/strong>. Nenhum evento &lt;code>tts&lt;/code> e nenhum &lt;code>transcribe&lt;/code> jamais havia sido registrado, porque esses caminhos nunca foram instrumentados. Eu não conseguia confirmar a hipótese da voz e também não conseguia matá-la.&lt;/p>
+&lt;p>Essa ausência já era a descoberta. Eu tinha um custo que não conseguia atribuir, num sistema em que o único caminho medido era o barato.&lt;/p>
+&lt;p>O que eu conseguia medir era texto: &lt;strong>R$ 0,0180 por mensagem&lt;/strong>, apurado em 13–14 de agosto. Multiplique isso por qualquer número plausível de mensagens de um punhado de testadores manuais e você não chega perto de R$ 252. O dinheiro não estava na conta de tokens por mensagem. Algo estrutural estava me cobrando.&lt;/p>
+&lt;h2 id="6-o-mecanismo-criações-empilhadas-armazenamentos-sobrepostos">6. O mecanismo: criações empilhadas, armazenamentos sobrepostos
+&lt;/h2>&lt;p>Quando parei de olhar volume de requisição e passei a olhar o ciclo de vida do cache, resolveu.&lt;/p>
+&lt;p>O &amp;ldquo;uma vez&amp;rdquo; que eu tinha na cabeça era ficção. Caches estavam sendo criados muito mais vezes do que eu supunha, e cada um seguia cobrando armazenamento até seu TTL expirar. Dois custos se compondo:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Criação, repetidamente.&lt;/strong> A criação do cache é cobrada ao preço de entrada normal, ou seja, escrever 363 mil tokens num cache custa exatamente o que custaria ter mandado esses 363 mil tokens inline. Crie um por mensagem e você pagou a conta original inteira, e ainda comprou armazenamento em cima dela. O cache nunca estava substituindo o custo antigo, estava somando a ele.&lt;/li>
+&lt;li>&lt;strong>Janelas de armazenamento sobrepostas.&lt;/strong> Vários caches do mesmo catálogo vivos ao mesmo tempo, cada um alugando espaço por hora até expirar.&lt;/li>
+&lt;/ul>
+&lt;p>O cache nunca amortizou o catálogo. Ele &lt;strong>multiplicou&lt;/strong> o catálogo, e mudou a cobrança para uma linha que ninguém estava lendo.&lt;/p>
+&lt;p>Vale dizer que tipo de falha é essa, porque ela mudou como eu penso controle de gasto. &lt;strong>Nenhum rate limit de aplicação teria pegado isso.&lt;/strong> O relógio de armazenamento por hora roda enquanto ninguém está fazendo requisição nenhuma. Teto por IP, teto por rota, toda a caixa de ferramentas que eu desenhei depois: nada disso vigia um cache ocioso. Um teto global teria limitado as &lt;strong>criações&lt;/strong>, e é por isso que ele continua na lista; mas a metade da conta que era armazenamento era invisível para a lógica de aplicação por construção.&lt;/p>
+&lt;h2 id="7-a-correção-não-foi-um-cache-melhor">7. A correção não foi um cache melhor
+&lt;/h2>&lt;p>Eu podia ter ajustado o TTL. Podia ter garantido que um único handle fosse reaproveitado. As duas coisas reduziriam o número sem tocar no motivo de ele existir.&lt;/p>
+&lt;p>A leitura honesta é que o cache estava compensando o desenho. &lt;strong>363 mil tokens por mensagem não é um problema de cache.&lt;/strong> É um problema de &amp;ldquo;você está mandando seu banco de dados inteiro para o modelo&amp;rdquo;, e cachear isso só deixa a conta mais silenciosa.&lt;/p>
+&lt;p>Então o catálogo parou de ir ao modelo. No lugar, uma recuperação em duas etapas:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Planner&lt;/strong> (Flash-Lite, barato) transforma a mensagem num plano de carrinho estruturado: itens canônicos, quantidades, termos de busca, filtros.&lt;/li>
+&lt;li>&lt;strong>Aterramento&lt;/strong> resolve cada item planejado no catálogo do Postgres, por similaridade vetorial mais casamento lexical, produzindo um &lt;strong>pool de 150 a 600 produtos&lt;/strong>, equilibrado por construção, de modo que todo item planejado tenha candidatos nele.&lt;/li>
+&lt;/ol>
+&lt;p>Só o pool chega ao modelo.&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>&lt;/th>
+&lt;th>antes&lt;/th>
+&lt;th>depois&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>catálogo enviado por mensagem&lt;/td>
+&lt;td>~9 mil produtos, ~363 mil tokens&lt;/td>
+&lt;td>pool de 150–600 produtos&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>tokens de entrada da síntese&lt;/td>
+&lt;td>~363.000&lt;/td>
+&lt;td>~5.374&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>cache explícito&lt;/td>
+&lt;td>necessário, para caber no bolso&lt;/td>
+&lt;td>removido&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Um pool de algumas centenas de produtos é barato o bastante para ir inline em toda requisição, então o modo &lt;code>'cache'&lt;/code> virou código morto (nada o lia) e foi removido junto com a própria criação do cache. O comentário que ficou no lugar é este post inteiro em cinco linhas:&lt;/p>
+&lt;blockquote>
+&lt;p>Só existe um modo. Havia um segundo, &lt;code>'cache'&lt;/code>, do desenho anterior, em que o catálogo INTEIRO ia ao modelo e era estacionado num &lt;code>cachedContent&lt;/code> para não pagar 363 mil tokens de entrada por mensagem. O retrieval tornou aquilo obsoleto: hoje vai só o POOL recuperado (150 a 600 produtos), que é barato o bastante para seguir inline. O modo &lt;code>'cache'&lt;/code> virou código morto (nada o lia) e foi removido junto com a criação do cache, que cobrava armazenamento por hora.&lt;/p>
+&lt;/blockquote>
+&lt;h2 id="8-nem-todo-cache-é-cache-explícito">8. Nem todo cache é cache explícito
+&lt;/h2>&lt;p>Vale separar uma coisa antes das conclusões, porque a lição deste post não é &amp;ldquo;cache é ruim&amp;rdquo;.&lt;/p>
+&lt;p>O que me custou dinheiro foi um cache &lt;strong>explícito&lt;/strong>: conteúdo que eu subi de propósito, um handle que eu segurava, armazenamento que eu alugava por hora. Existe também o cache &lt;strong>implícito&lt;/strong>, em que o provedor reaproveita sozinho um prefixo que se repete entre requisições. O token cacheado custa uma fração do token de entrada normal, nada é armazenado em seu nome e não existe linha por hora na fatura. Você não configura, e também não tem como esquecer ligado. Ou você dá a ele um prefixo estável, ou não dá.&lt;/p>
+&lt;p>Essa diferença é toda a distância entre os dois caches desta história. O que eu configurei e esqueci me cobrou por relógio. O outro não dá para deixar ligado sem querer, porque não há nada para deixar ligado. Quanto o implícito vale de verdade, depois de reorganizar o prompt para ele conseguir trabalhar, é uma história que eu conto em um outro post.&lt;/p>
+&lt;h2 id="9-o-que-faltava-de-verdade-atribuição-não-alarme">9. O que faltava de verdade: atribuição, não alarme
+&lt;/h2>&lt;p>A mudança de código não foi a correção real. Dois dias depois do incidente eu escrevi o estado do sistema:&lt;/p>
+&lt;ul>
+&lt;li>nenhum rate limit em rota nenhuma, só retry em 429&lt;/li>
+&lt;li>nenhuma autenticação, nenhum cookie, nenhuma sessão, nenhum conceito de usuário&lt;/li>
+&lt;li>&lt;code>/api/tts&lt;/code> e &lt;code>/api/transcribe&lt;/code> aceitando payload ilimitado do cliente&lt;/li>
+&lt;li>&lt;strong>nenhum registro, por chamada, de qual classe de custo ela era&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;p>O contexto importa aqui, porque sem ele essa lista parece negligência. Isso nasceu como projeto de hackathon, feito para ganhar um. Nessa etapa a única coisa que conta é o produto funcionando de ponta a ponta, na frente dos jurados, no prazo. Rate limit, autenticação e quota por usuário não foram esquecimento, foram deliberadamente deixados para depois. E também não são controles que se desenham no vácuo: os tetos que fazem sentido dependem de qual cliente está para assinar e de como é o tráfego dele, e nada disso existia em agosto. Adiar foi a decisão certa e eu tomaria de novo.&lt;/p>
+&lt;p>Uma coisa não faltava, e é por isso que eu descobri em dois dias em vez de no fim do mês: eu tinha budget alert configurado, em R$ 100, e ele disparou. Ele fez exatamente o que um budget alert faz, e exatamente nada além disso. &lt;strong>Ele me disse que o total tinha cruzado uma linha. Não tinha como me dizer qual linha.&lt;/strong>&lt;/p>
+&lt;p>Essa lacuna é a lição inteira. Alerta é um limiar sobre uma soma, então a única ação que ele consegue sugerir é a grossa: sair desligando coisa até o número parar de subir.&lt;/p>
+&lt;p>Escolhi não fazer isso, e duas coisas transformam essa escolha em conta, não em bravata. O gasto estava dentro do que eu conseguia absorver, por mais desagradável que fosse ver aquilo subindo, e eu tinha um segundo número na cabeça a partir do qual derrubaria tudo independentemente do quanto já tivesse descoberto. E, mais importante, o app não estava em produção. Ninguém dependia dele, nenhum cliente notaria nem o gasto nem uma parada, e o único exposto ali era meu próprio dinheiro. Nessas condições, deixar rodando era a forma mais barata de comprar evidência, porque desligar levaria embora o sintoma junto com todo rastro da causa.&lt;/p>
+&lt;p>Em produção essa conta se inverte, e vale dizer isso com todas as letras, porque a decisão certa aqui é a errada lá. Se foi uma subida que começou a escalada, a primeira ação é rollback imediato, antes de qualquer diagnóstico: você restaura o comportamento conhecido, estanca o gasto e reproduz o problema num ambiente em que estudar sai quase de graça. Investigar no sistema vivo é para quando rollback não é opção, e enquanto você investiga está pagando por evidência por hora. Eu fiz a metade do diagnóstico e pulei a metade do rollback por um motivo nada glamoroso: não havia ambiente de produção para onde voltar.&lt;/p>
+&lt;p>O que teria transformado essa investigação numa consulta é justamente o que eu não tinha: classe de custo gravada em toda chamada. Com &lt;code>chat&lt;/code>, &lt;code>tts&lt;/code>, &lt;code>transcribe&lt;/code> e criação de cache etiquetados e precificados, a resposta é um &lt;code>GROUP BY&lt;/code>. Sem isso, o que eu tinha era um número subindo e um sistema com um caminho instrumentado de quatro.&lt;/p>
+&lt;p>A ordem que eu escolhi para quando esses controles forem construídos não é, de propósito, a ordem que parece natural:&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>Teto de tamanho antes de teto de frequência.&lt;/strong> Rate limit não limita custo quando o payload é ilimitado: &amp;ldquo;10 por minuto&amp;rdquo; ainda permite dez requisições de 50 mil caracteres cada. Teto de tamanho é stateless, não precisa de contador compartilhado nem de decisão sobre chave de identidade, não tem falso positivo e limita o pior caso de cada requisição isoladamente. Meia hora de trabalho.&lt;/li>
+&lt;li>&lt;strong>Classe de custo em toda chamada.&lt;/strong> O alerta te dá um total; isso te dá a quebra que torna o total acionável. É uma coluna, não um sistema, e é o que separa &amp;ldquo;o gasto subiu&amp;rdquo; de &amp;ldquo;o gasto subiu porque a criação de cache rodou 400 vezes&amp;rdquo;.&lt;/li>
+&lt;li>&lt;strong>Medir os caminhos não medidos&lt;/strong>, uma chamada real de TTS e uma de STT com o log ligado, para calibrar tetos com número em vez de palpite.&lt;/li>
+&lt;li>&lt;strong>Teto global por classe de custo&lt;/strong>, guardado no Postgres e não em memória (em serverless as instâncias vão e vêm, então contador em memória vaza limite de forma aleatória), com kill switch desde o primeiro commit, senão a bateria de qualidade passa a bater no próprio teto.&lt;/li>
+&lt;li>&lt;strong>Teto por IP, generoso.&lt;/strong> Uma demonstração em que um time inteiro testa na mesma sala é o pior caso para limite por IP, e wifi corporativo e CGNAT fazem a mesma coisa. E é fraco do outro lado: trocar de IP é barato para quem quer abusar.&lt;/li>
+&lt;/ol>
+&lt;p>Repare que os passos 1 e 2 são os itens mais baratos da lista e nenhum dos dois é uma funcionalidade. A parte cara deste incidente não foi construir nada, e também não foi alarme faltando. Foi ter um alarme que só conseguia dizer &lt;em>que&lt;/em> o dinheiro estava saindo, num sistema que não conseguia dizer &lt;em>por onde&lt;/em>.&lt;/p>
+&lt;h2 id="10-lições-aprendidas">10. Lições aprendidas
+&lt;/h2>&lt;p>&lt;strong>Um experimento que você deixa ligado para de ser experimento.&lt;/strong> O cache era um teste, e como teste deu certo. O que custou dinheiro foi o intervalo entre &amp;ldquo;funciona&amp;rdquo; e &amp;ldquo;agora decide se fica&amp;rdquo;, que eu nunca fechei, porque não havia nada no sistema para me lembrar. Qualquer coisa que você liga para experimentar precisa terminar o dia com uma decisão tomada ou com prazo de validade.&lt;/p>
+&lt;p>&lt;strong>Um cache é uma aposta de que você vai reusar o que guardou.&lt;/strong> Cobrada por hora, você paga por essa aposta enquanto ela durar. Se o reuso não acontece, ou se a coisa guardada fica sendo substituída, você paga aluguel de algo que ninguém lê.&lt;/p>
+&lt;p>&lt;strong>Cache não é correção para enviar dados demais.&lt;/strong> Ele muda a conta de lugar; não a reduz. Se o número que você está prestes a cachear é absurdo, o número é o bug e o cache é o sintoma.&lt;/p>
+&lt;p>&lt;strong>Leia a página de preço da funcionalidade, não só a do modelo.&lt;/strong> Preço por token é o que todo mundo compara. Meu dinheiro saiu por criação de cache e armazenamento por hora, duas linhas que nunca aparecem numa tabela de comparação de modelos.&lt;/p>
+&lt;p>&lt;strong>Alarme não é instrumentação.&lt;/strong> O budget alert fez o trabalho dele e avisou que o total tinha se mexido. Atribuição é outra funcionalidade, e essa eu não tinha: 424 eventos gravados, todos do caminho mais barato, nada registrado nos três caminhos que podiam plausivelmente ser o caro. Limiar sobre soma manda você entrar em pânico; só a quebra diz onde olhar.&lt;/p>
+&lt;p>&lt;strong>Prefira o cache que você não precisa configurar.&lt;/strong> O implícito era mais barato, automático e sem risco de armazenamento. Cache explícito é para conteúdo realmente grande, realmente estável e realmente lido muitas vezes antes do TTL expirar. E você deveria conseguir dizer qual dessas três coisas você mediu.&lt;/p>
+&lt;p>&lt;strong>Gasto que não acompanha o uso é pior que gasto alto.&lt;/strong> R$ 252 é pouco. R$ 252 em 48 horas sem ninguém usando quer dizer que a conta parou de depender de mim, e o que eu não controlo eu também não sei dimensionar.&lt;/p>
+&lt;h2 id="11-conclusão">11. Conclusão
+&lt;/h2>&lt;p>A versão curta dessa história é que eu liguei um cache para testar, ele funcionou, eu esqueci dele, e ele me cobrou por hora até eu perceber. A versão útil é que o cache nunca foi o problema real: o problema era um desenho que mandava 363 mil tokens por mensagem, e o motivo de isso levar dias em vez de minutos para ser achado é que o alerta sabia dizer que o total tinha se mexido, e nada no sistema sabia dizer o que tinha mexido.&lt;/p>
+&lt;p>Adotar essas APIs significa adotar um modelo de cobrança que a maioria de nós ainda não internalizou, e que é mais largo que o modelo de linguagem em si: a mesma fatura carrega armazenamento, criação de cache, duração de áudio e tokens de saída, precificados em escalas completamente diferentes, e o erro mais barato possível é o que você percebe em uma hora em vez de uma semana. Um budget alert vai te dizer que o dinheiro está saindo. Decidir, no primeiro dia, gravar quanto cada chamada custou e por quê é o que te diz para onde ele foi.&lt;/p>
+&lt;h2 id="12-referências">12. Referências
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://cloud.google.com/vertex-ai/generative-ai/docs/context-cache/context-cache-overview" target="_blank" rel="noopener"
+>Visão geral do cache de contexto no Vertex AI&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://cloud.google.com/vertex-ai/generative-ai/pricing" target="_blank" rel="noopener"
+>Preços de IA generativa no Vertex AI&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://ai.google.dev/gemini-api/docs/caching" target="_blank" rel="noopener"
+>Gemini API: cache de contexto (implícito e explícito)&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://cloud.google.com/billing/docs/how-to/budgets" target="_blank" rel="noopener"
+>Cloud Billing: criar, editar ou excluir orçamentos e alertas de orçamento&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>
