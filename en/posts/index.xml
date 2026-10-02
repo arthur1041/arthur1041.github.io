@@ -1,4 +1,268 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Arthur Cruz</title><link>https://arthcruz.dev/en/posts/</link><description>Recent content in Posts on Arthur Cruz</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Mon, 05 Oct 2026 09:00:00 -0300</lastBuildDate><atom:link href="https://arthcruz.dev/en/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>I Turned On Caching to Save Money. It Cost Me More.</title><link>https://arthcruz.dev/en/posts/i-turned-on-caching-to-save-money-it-cost-me-more/</link><pubDate>Tue, 29 Sep 2026 00:00:00 +0000</pubDate><guid>https://arthcruz.dev/en/posts/i-turned-on-caching-to-save-money-it-cost-me-more/</guid><description>&lt;img src="https://arthcruz.dev/en/posts/i-turned-on-caching-to-save-money-it-cost-me-more/images/poster.png" alt="Featured image of post I Turned On Caching to Save Money. It Cost Me More." />&lt;h2 id="1-the-number-and-why-the-number-is-not-the-point">1. The number, and why the number is not the point
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on Arthur Cruz</title><link>https://arthcruz.dev/en/posts/</link><description>Recent content in Posts on Arthur Cruz</description><generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Thu, 01 Oct 2026 00:00:00 -0300</lastBuildDate><atom:link href="https://arthcruz.dev/en/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>JavaScript Arrays Are Not Arrays</title><link>https://arthcruz.dev/en/posts/javascript-arrays-are-not-arrays/</link><pubDate>Thu, 01 Oct 2026 00:00:00 -0300</pubDate><guid>https://arthcruz.dev/en/posts/javascript-arrays-are-not-arrays/</guid><description>&lt;img src="https://arthcruz.dev/en/posts/javascript-arrays-are-not-arrays/images/poster.png" alt="Featured image of post JavaScript Arrays Are Not Arrays" />&lt;p>Every measurement and every output in this post was produced on Node 24.16.0, V8 13.6.233.17. The element layouts in section 7 were inspected with &lt;code>node --allow-natives-syntax&lt;/code>.&lt;/p>
+&lt;h2 id="1-what-an-array-is-and-why-the-definition-matters">1. What an array is, and why the definition matters
+&lt;/h2>&lt;p>An array, in the data structure sense, is a contiguous block of memory holding elements of equal and known size. That single sentence carries everything else:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-c" data-lang="c">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">int&lt;/span> xs[&lt;span style="color:#ae81ff">5&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// xs[3] is not a lookup. It is arithmetic:
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">// address(xs[3]) = address(xs) + 3 * sizeof(int)
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Because the elements are the same size and sit next to each other, the address of element &lt;code>i&lt;/code> is computable with one multiplication and one addition. Constant time indexing is not a feature the structure provides. It is a consequence of the layout, and it is unavoidable: there is nothing to search, nothing to hash, nothing to walk.&lt;/p>
+&lt;p>The same layout forces the rest of the contract. The length is fixed, because the block was allocated once. Every slot is the same size, because the arithmetic needs a constant stride. That usually means a uniform element type, although an array of pointers satisfies it while pointing at different things. There are no gaps, because every byte in the block is part of some element whether you wrote to it or not.&lt;/p>
+&lt;p>Hold on to those four properties: &lt;strong>contiguous, fixed-size slots, fixed length, no gaps&lt;/strong>. They are what the word means. Everything else that borrows the name is borrowing it.&lt;/p>
+&lt;h2 id="2-what-javascript-gives-you-instead">2. What JavaScript gives you instead
+&lt;/h2>&lt;p>In the ECMAScript specification, an Array is an &lt;em>exotic object&lt;/em>: an ordinary object with a customised &lt;code>[[DefineOwnProperty]]&lt;/code> and a &lt;code>length&lt;/code> property that maintains itself. Note the noun. It is an object.&lt;/p>
+&lt;p>That is not a metaphor. Property keys in JavaScript come in two kinds, strings and symbols, and array indices are always the first kind:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">10&lt;/span>, &lt;span style="color:#ae81ff">20&lt;/span>, &lt;span style="color:#ae81ff">30&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Object.&lt;span style="color:#a6e22e">keys&lt;/span>(&lt;span style="color:#a6e22e">a&lt;/span>); &lt;span style="color:#75715e">// [&amp;#34;0&amp;#34;, &amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#66d9ef">typeof&lt;/span> Object.&lt;span style="color:#a6e22e">keys&lt;/span>(&lt;span style="color:#a6e22e">a&lt;/span>)[&lt;span style="color:#ae81ff">0&lt;/span>]; &lt;span style="color:#75715e">// &amp;#34;string&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">a&lt;/span>[&lt;span style="color:#e6db74">&amp;#39;1&amp;#39;&lt;/span>] &lt;span style="color:#f92672">===&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>]; &lt;span style="color:#75715e">// true
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">Reflect&lt;/span>.&lt;span style="color:#a6e22e">ownKeys&lt;/span>(&lt;span style="color:#a6e22e">a&lt;/span>); &lt;span style="color:#75715e">// [&amp;#34;0&amp;#34;, &amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;, &amp;#34;length&amp;#34;]
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>a[1]&lt;/code> is not an offset. It is a property lookup whose key happens to be the string &lt;code>&amp;quot;1&amp;quot;&lt;/code>, and the number you wrote got converted to that string on the way in. There is no address arithmetic anywhere in that abstraction. Whether any arithmetic happens underneath is a decision the engine makes later, and section 7 is about how it decides.&lt;/p>
+&lt;h2 id="3-the-index-is-not-a-number-it-is-a-very-specific-string">3. The index is not a number, it is a very specific string
+&lt;/h2>&lt;p>If indices are string keys, then something has to decide which strings are indices. The specification does, and the rule is narrow: a key is an array index when it is the canonical decimal string of a non-negative integer below 2&lt;sup>32&lt;/sup> minus 1. Canonical means the round trip survives, so &lt;code>String(Number(key)) === key&lt;/code>. Non-negative and integer are separate requirements, and each one excludes a case that looks like it should work.&lt;/p>
+&lt;p>Everything else is an ordinary property that happens to live on an array:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">c&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">c&lt;/span>[&lt;span style="color:#f92672">-&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;negative&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">c&lt;/span>[&lt;span style="color:#ae81ff">1.5&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;fractional&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">c&lt;/span>[&lt;span style="color:#e6db74">&amp;#39;01&amp;#39;&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;leading zero&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">c&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span>; &lt;span style="color:#75715e">// 3, unchanged by all three
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Object.&lt;span style="color:#a6e22e">keys&lt;/span>(&lt;span style="color:#a6e22e">c&lt;/span>); &lt;span style="color:#75715e">// [&amp;#34;0&amp;#34;, &amp;#34;1&amp;#34;, &amp;#34;2&amp;#34;, &amp;#34;-1&amp;#34;, &amp;#34;1.5&amp;#34;, &amp;#34;01&amp;#34;]
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Three writes that look like indexing, none of which indexed anything, and each one fails a different clause of the rule. &lt;code>-1&lt;/code> is not non-negative. &lt;code>1.5&lt;/code> is not an integer. &lt;code>'01'&lt;/code> is not canonical, because &lt;code>String(Number('01'))&lt;/code> is &lt;code>'1'&lt;/code>, not &lt;code>'01'&lt;/code>.&lt;/p>
+&lt;p>The upper bound is just as real:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">b&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">b&lt;/span>[&lt;span style="color:#ae81ff">4294967294&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;last valid index&amp;#39;&lt;/span>; &lt;span style="color:#75715e">// 2**32 - 2
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">b&lt;/span>[&lt;span style="color:#ae81ff">4294967295&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;not an index&amp;#39;&lt;/span>; &lt;span style="color:#75715e">// 2**32 - 1
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span>; &lt;span style="color:#75715e">// 4294967295
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Object.&lt;span style="color:#a6e22e">prototype&lt;/span>.&lt;span style="color:#a6e22e">hasOwnProperty&lt;/span>.&lt;span style="color:#a6e22e">call&lt;/span>(&lt;span style="color:#a6e22e">b&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;4294967295&amp;#39;&lt;/span>); &lt;span style="color:#75715e">// true, as a plain property
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">big&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">big&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span> &lt;span style="color:#f92672">**&lt;/span> &lt;span style="color:#ae81ff">32&lt;/span>; &lt;span style="color:#75715e">// RangeError: Invalid array length
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>In a real array the index is an offset, bounded by the allocation. Here it is a string, bounded by a spec rule, and stepping one past the boundary does not fail. It silently stops being an index and becomes a property, which is a far stranger failure mode than a segmentation fault.&lt;/p>
+&lt;h2 id="4-the-structure-admits-absence">4. The structure admits absence
+&lt;/h2>&lt;p>A real array cannot have a gap. Every slot is bytes, and bytes are always something, even if that something is uninitialised garbage.&lt;/p>
+&lt;p>A JavaScript array can be missing an element entirely, because a missing property is a thing objects can have:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">delete&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">d&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span>; &lt;span style="color:#75715e">// 3
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#66d9ef">in&lt;/span> &lt;span style="color:#a6e22e">d&lt;/span>; &lt;span style="color:#75715e">// false
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">d&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>]; &lt;span style="color:#75715e">// undefined
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Object.&lt;span style="color:#a6e22e">keys&lt;/span>(&lt;span style="color:#a6e22e">d&lt;/span>); &lt;span style="color:#75715e">// [&amp;#34;0&amp;#34;, &amp;#34;2&amp;#34;]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">JSON&lt;/span>.&lt;span style="color:#a6e22e">stringify&lt;/span>(&lt;span style="color:#a6e22e">d&lt;/span>); &lt;span style="color:#75715e">// &amp;#34;[1,null,3]&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The length still says three. The key &lt;code>&amp;quot;1&amp;quot;&lt;/code> is gone. Reading it yields &lt;code>undefined&lt;/code>, which is exactly what you would get from a property that was never there, because that is what it now is.&lt;/p>
+&lt;p>Note that a hole and a stored &lt;code>undefined&lt;/code> are different states that read identically:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">e&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#66d9ef">undefined&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#ae81ff">1&lt;/span> &lt;span style="color:#66d9ef">in&lt;/span> &lt;span style="color:#a6e22e">e&lt;/span>; &lt;span style="color:#75715e">// true, the property exists and holds undefined
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>And because a hole is an absent property, reading it does what reading any absent property does: it walks the prototype chain.&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">f&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, , &lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Array.&lt;span style="color:#a6e22e">prototype&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;from the prototype&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">f&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>]; &lt;span style="color:#75715e">// &amp;#34;from the prototype&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>That is the whole argument in one line. No array in the data structure sense can resolve a read by consulting a parent object, because there is no lookup to intercept, only arithmetic.&lt;/p>
+&lt;h2 id="5-length-is-a-setting-not-a-measurement">5. &lt;code>length&lt;/code> is a setting, not a measurement
+&lt;/h2>&lt;p>In a real array the length is a property of the allocation. You do not assign to it. In JavaScript it is a writable property, and writing to it is how you resize:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">g&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>, &lt;span style="color:#ae81ff">4&lt;/span>, &lt;span style="color:#ae81ff">5&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">g&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">2&lt;/span>; &lt;span style="color:#75715e">// [1, 2] the last three are gone
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">g&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">5&lt;/span>; &lt;span style="color:#75715e">// [1, 2, &amp;lt;3 empty items&amp;gt;]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#ae81ff">3&lt;/span> &lt;span style="color:#66d9ef">in&lt;/span> &lt;span style="color:#a6e22e">g&lt;/span>; &lt;span style="color:#75715e">// false
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Truncation destroys data. Extension manufactures holes. And &lt;code>length&lt;/code> is not the number of elements, because nothing counts anything. The rule is narrower: writing an array index at or beyond the current &lt;code>length&lt;/code> sets &lt;code>length&lt;/code> to that index plus one, and writing to &lt;code>length&lt;/code> directly sets it to whatever you asked for.&lt;/p>
+&lt;p>Both halves of that matter, because either one alone would be a nicer story than the truth:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">a&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">100&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>Object.&lt;span style="color:#a6e22e">keys&lt;/span>(&lt;span style="color:#a6e22e">a&lt;/span>).&lt;span style="color:#a6e22e">length&lt;/span>; &lt;span style="color:#75715e">// 0, a hundred elements it never had
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">b&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">b&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; &lt;span style="color:#75715e">// now 1, even though index 2 was assigned
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>That is why &lt;code>Object.keys(d).length&lt;/code> and &lt;code>d.length&lt;/code> disagree the moment a hole exists.&lt;/p>
+&lt;h2 id="6-it-is-an-object-so-it-carries-whatever-you-attach">6. It is an object, so it carries whatever you attach
+&lt;/h2>&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">h&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">author&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#e6db74">&amp;#39;arthur&amp;#39;&lt;/span>;
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span>; &lt;span style="color:#75715e">// 2
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Object.&lt;span style="color:#a6e22e">keys&lt;/span>(&lt;span style="color:#a6e22e">h&lt;/span>); &lt;span style="color:#75715e">// [&amp;#34;0&amp;#34;, &amp;#34;1&amp;#34;, &amp;#34;author&amp;#34;]
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">JSON&lt;/span>.&lt;span style="color:#a6e22e">stringify&lt;/span>(&lt;span style="color:#a6e22e">h&lt;/span>); &lt;span style="color:#75715e">// &amp;#34;[1,2]&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>The property exists, the length ignores it, and the serialiser drops it. Three subsystems, three different opinions about whether it is part of the array.&lt;/p>
+&lt;p>And the type system, such as it is, agrees with none of them:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">typeof&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>]; &lt;span style="color:#75715e">// &amp;#34;object&amp;#34;
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Array.&lt;span style="color:#a6e22e">isArray&lt;/span>([&lt;span style="color:#ae81ff">1&lt;/span>,&lt;span style="color:#ae81ff">2&lt;/span>,&lt;span style="color:#ae81ff">3&lt;/span>]); &lt;span style="color:#75715e">// true
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>Array.isArray&lt;/code> exists precisely because &lt;code>typeof&lt;/code> cannot tell you. There is no array type to report.&lt;/p>
+&lt;h2 id="7-so-why-is-it-fast-because-the-engine-lies-for-you">7. So why is it fast? Because the engine lies for you
+&lt;/h2>&lt;p>Everything above describes a dictionary with rules. If engines implemented it literally, array code would be unusably slow. They do not. V8 tracks what it calls an &lt;strong>elements kind&lt;/strong> for every array and picks a representation to match.&lt;/p>
+&lt;p>The kinds form a lattice from most specific to most general, and the transitions are visible:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>]; &lt;span style="color:#75715e">// PACKED_SMI_ELEMENTS
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">a&lt;/span>.&lt;span style="color:#a6e22e">push&lt;/span>(&lt;span style="color:#ae81ff">4.5&lt;/span>); &lt;span style="color:#75715e">// PACKED_DOUBLE_ELEMENTS
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">a&lt;/span>.&lt;span style="color:#a6e22e">push&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;text&amp;#39;&lt;/span>); &lt;span style="color:#75715e">// PACKED_ELEMENTS
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Each step widens what a slot may hold, and each step costs something. The packed small integer case stores tagged small integers directly in a contiguous backing store, which is an actual array in the sense of section 1. The packed double case stores unboxed doubles. The general case uses tagged slots that hold either kind: a small integer still sits in the slot directly, and anything else is a reference to the heap.&lt;/p>
+&lt;p>A second axis tracks whether holes are possible:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>what you wrote&lt;/th>
+&lt;th>resulting kind&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>[1, 2, 3]&lt;/code>&lt;/td>
+&lt;td>&lt;code>PACKED_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[1.1, 2.2]&lt;/code>&lt;/td>
+&lt;td>&lt;code>PACKED_DOUBLE&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[]&lt;/code>&lt;/td>
+&lt;td>&lt;code>PACKED_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>new Array(3)&lt;/code>&lt;/td>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[1,2,3]&lt;/code> then &lt;code>delete a[1]&lt;/code>&lt;/td>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[1,2,3]&lt;/code> then &lt;code>a[10] = 4&lt;/code>&lt;/td>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[1,2,3]&lt;/code> then &lt;code>a[100000] = 1&lt;/code>&lt;/td>
+&lt;td>&lt;code>DICTIONARY_ELEMENTS&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Holey representations must check, for every read, whether the slot is a hole, and if it is, fall back to the prototype walk from section 4. Dictionary mode abandons the buffer entirely and stores the elements in a hash table, which is much closer to the property lookup the specification actually describes.&lt;/p>
+&lt;p>The transitions do not reverse on their own. Removing the element that caused the change does not restore the previous representation:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">h&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1.5&lt;/span>, &lt;span style="color:#ae81ff">2.5&lt;/span>, &lt;span style="color:#ae81ff">3.5&lt;/span>]; &lt;span style="color:#75715e">// PACKED_DOUBLE
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">push&lt;/span>(&lt;span style="color:#e6db74">&amp;#39;x&amp;#39;&lt;/span>); &lt;span style="color:#75715e">// PACKED_ELEMENTS
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">h&lt;/span>.&lt;span style="color:#a6e22e">pop&lt;/span>(); &lt;span style="color:#75715e">// still PACKED_ELEMENTS
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>They are not strictly one way, though. An operation that rewrites every slot can produce a narrower kind, and &lt;code>fill&lt;/code> is the clearest case in current V8. It takes a holey array back to packed, and in my measurement it took a &lt;code>PACKED_ELEMENTS&lt;/code> array all the way back to &lt;code>PACKED_SMI&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [&lt;span style="color:#ae81ff">1&lt;/span>, &lt;span style="color:#ae81ff">2&lt;/span>, &lt;span style="color:#ae81ff">3&lt;/span>];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">delete&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span>[&lt;span style="color:#ae81ff">1&lt;/span>]; &lt;span style="color:#75715e">// HOLEY_SMI
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">a&lt;/span>.&lt;span style="color:#a6e22e">fill&lt;/span>(&lt;span style="color:#ae81ff">0&lt;/span>); &lt;span style="color:#75715e">// PACKED_SMI, back down the lattice
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>So the useful formulation is not that the lattice is one way, it is that you never climb back down it by accident. Widening happens as a side effect of ordinary writes; narrowing takes an operation that rewrites the whole backing store.&lt;/p>
+&lt;p>This is the real answer to the title. The array you think you are using is a representation the engine grants you while your usage stays inside a set of assumptions, and silently revokes when it does not. The specification promises an object with a self-maintaining length. The contiguous buffer is a performance optimisation, not a guarantee.&lt;/p>
+&lt;h2 id="8-the-cliff-measured">8. The cliff, measured
+&lt;/h2>&lt;p>Three arrays of 100,000 integers, identical contents and identical length, differing only in elements kind. Summing each with a plain indexed &lt;code>for&lt;/code> loop, 100 warmup runs, median of 51 measured runs:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>elements kind&lt;/th>
+&lt;th>median&lt;/th>
+&lt;th>relative&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>PACKED_SMI&lt;/code>&lt;/td>
+&lt;td>0.053 ms&lt;/td>
+&lt;td>1x&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;td>0.080 ms&lt;/td>
+&lt;td>about 1.2x to 1.5x across runs&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>DICTIONARY&lt;/code>&lt;/td>
+&lt;td>2.94 ms&lt;/td>
+&lt;td>about 43x to 56x across runs&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>The holey penalty is real but modest, and it moved enough between runs that I would not quote a precise multiplier for it. The dictionary penalty is not modest and did not move: it is the difference between arithmetic and hashing, on the same data, in the same loop.&lt;/p>
+&lt;p>What produced the dictionary case is worth staring at. It was one assignment:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">a&lt;/span> &lt;span style="color:#f92672">=&lt;/span> [];
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">for&lt;/span> (&lt;span style="color:#66d9ef">let&lt;/span> &lt;span style="color:#a6e22e">i&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">0&lt;/span>; &lt;span style="color:#a6e22e">i&lt;/span> &lt;span style="color:#f92672">&amp;lt;&lt;/span> &lt;span style="color:#ae81ff">100000&lt;/span>; &lt;span style="color:#a6e22e">i&lt;/span>&lt;span style="color:#f92672">++&lt;/span>) &lt;span style="color:#a6e22e">a&lt;/span>.&lt;span style="color:#a6e22e">push&lt;/span>(&lt;span style="color:#a6e22e">i&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">a&lt;/span>[&lt;span style="color:#ae81ff">5000000&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">1&lt;/span>; &lt;span style="color:#75715e">// one index far past the end
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">a&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">100000&lt;/span>; &lt;span style="color:#75715e">// even undoing it does not restore the representation
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>A single write to a distant index converted a contiguous buffer into a hash table, and the array kept every appearance of being an array while running fifty times slower.&lt;/p>
+&lt;h2 id="9-the-real-array-is-spelled-differently">9. The real array is spelled differently
+&lt;/h2>&lt;p>JavaScript does have the structure from section 1. It has another name:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">t&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">Int32Array&lt;/span>(&lt;span style="color:#ae81ff">3&lt;/span>);
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">t&lt;/span>.&lt;span style="color:#a6e22e">BYTES_PER_ELEMENT&lt;/span>; &lt;span style="color:#75715e">// 4
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">t&lt;/span>.&lt;span style="color:#a6e22e">buffer&lt;/span>.&lt;span style="color:#a6e22e">byteLength&lt;/span>; &lt;span style="color:#75715e">// 12, exactly 3 * 4
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">t&lt;/span>[&lt;span style="color:#ae81ff">5&lt;/span>] &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">99&lt;/span>; &lt;span style="color:#75715e">// out of bounds: discarded
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">t&lt;/span>[&lt;span style="color:#ae81ff">5&lt;/span>]; &lt;span style="color:#75715e">// undefined
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>Object.&lt;span style="color:#a6e22e">prototype&lt;/span>.&lt;span style="color:#a6e22e">hasOwnProperty&lt;/span>.&lt;span style="color:#a6e22e">call&lt;/span>(&lt;span style="color:#a6e22e">t&lt;/span>, &lt;span style="color:#e6db74">&amp;#39;5&amp;#39;&lt;/span>); &lt;span style="color:#75715e">// false, no property was created
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#a6e22e">t&lt;/span>.&lt;span style="color:#a6e22e">length&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#ae81ff">10&lt;/span>; &lt;span style="color:#75715e">// TypeError in strict mode: length has only a getter
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>Fixed length, uniform element type, contiguous backing buffer, and a write outside the bounds is discarded rather than turned into a property. Twelve bytes, three integers, address arithmetic. That is an array.&lt;/p>
+&lt;p>One qualification on &amp;ldquo;fixed&amp;rdquo;. Since resizable &lt;code>ArrayBuffer&lt;/code>, a typed array constructed over a resizable buffer tracks it, and its length changes when the buffer does:&lt;/p>
+&lt;div class="highlight">&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">&lt;code class="language-js" data-lang="js">&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">rab&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">ArrayBuffer&lt;/span>(&lt;span style="color:#ae81ff">8&lt;/span>, { &lt;span style="color:#a6e22e">maxByteLength&lt;/span>&lt;span style="color:#f92672">:&lt;/span> &lt;span style="color:#ae81ff">64&lt;/span> });
+&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#66d9ef">const&lt;/span> &lt;span style="color:#a6e22e">t&lt;/span> &lt;span style="color:#f92672">=&lt;/span> &lt;span style="color:#66d9ef">new&lt;/span> &lt;span style="color:#a6e22e">Int32Array&lt;/span>(&lt;span style="color:#a6e22e">rab&lt;/span>); &lt;span style="color:#75715e">// t.length is 2
+&lt;/span>&lt;/span>&lt;/span>&lt;span style="display:flex;">&lt;span>&lt;span style="color:#75715e">&lt;/span>&lt;span style="color:#a6e22e">rab&lt;/span>.&lt;span style="color:#a6e22e">resize&lt;/span>(&lt;span style="color:#ae81ff">32&lt;/span>); &lt;span style="color:#75715e">// t.length is now 8
+&lt;/span>&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/div>&lt;p>&lt;code>new Int32Array(3)&lt;/code>, the case above, cannot do that. Its buffer is not resizable, so its length is settled at construction.&lt;/p>
+&lt;p>It is still an object, and it will still hold what you attach to it (&lt;code>t.foo = 'bar'&lt;/code> works). But the &lt;em>indexed&lt;/em> part is no longer negotiable, which is the entire difference.&lt;/p>
+&lt;h2 id="10-what-follows-in-practice">10. What follows in practice
+&lt;/h2>&lt;p>All of the following was measured the same way, and it is the practical residue of the argument:&lt;/p>
+&lt;table>
+&lt;thead>
+&lt;tr>
+&lt;th>construction&lt;/th>
+&lt;th>resulting kind&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td>&lt;code>[]&lt;/code> then &lt;code>push&lt;/code> in a loop&lt;/td>
+&lt;td>&lt;code>PACKED_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>new Array(3)&lt;/code>&lt;/td>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>new Array(3).fill(0)&lt;/code>&lt;/td>
+&lt;td>&lt;code>PACKED_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>Array.from({length: 3}, (_, i) =&amp;gt; i)&lt;/code>&lt;/td>
+&lt;td>&lt;code>PACKED_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[1,2,3]&lt;/code> then &lt;code>splice(1, 1)&lt;/code>&lt;/td>
+&lt;td>&lt;code>PACKED_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>[1,2,3]&lt;/code> then &lt;code>delete a[1]&lt;/code>&lt;/td>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>map&lt;/code> over a holey array&lt;/td>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td>&lt;code>filter&lt;/code> over a holey array&lt;/td>
+&lt;td>&lt;code>HOLEY_SMI&lt;/code>&lt;/td>
+&lt;/tr>
+&lt;/tbody>
+&lt;/table>
+&lt;p>Four things follow, in descending order of how much they matter:&lt;/p>
+&lt;p>&lt;strong>Never write far past the end.&lt;/strong> This is the only one with a catastrophic failure mode, and section 8 measured it. Everything else on this list costs a fraction; this one costs an order of magnitude, and it survives the removal of what caused it.&lt;/p>
+&lt;p>&lt;strong>Remove with &lt;code>splice&lt;/code> or &lt;code>pop&lt;/code>, not &lt;code>delete&lt;/code>.&lt;/strong> &lt;code>delete&lt;/code> punches a hole by definition: it removes a property. &lt;code>splice&lt;/code> re-indexes and keeps the array packed.&lt;/p>
+&lt;p>&lt;strong>If you pre-size, fill.&lt;/strong> &lt;code>new Array(n)&lt;/code> is holey from birth. &lt;code>new Array(n).fill(0)&lt;/code> and &lt;code>Array.from({length: n}, fn)&lt;/code> are not.&lt;/p>
+&lt;p>&lt;strong>Holes propagate.&lt;/strong> &lt;code>map&lt;/code> and &lt;code>filter&lt;/code> over a holey array return holey arrays, even though &lt;code>filter&lt;/code> drops the holes. If a hole enters your data early, it travels.&lt;/p>
+&lt;p>And a calibration, because this topic attracts folklore: on the measurement above, holey cost roughly twenty to fifty percent on a tight summing loop. That is worth avoiding, not worth rewriting code in a panic over. Dictionary mode is the one to actually fear.&lt;/p>
+&lt;h2 id="11-conclusion">11. Conclusion
+&lt;/h2>&lt;p>The name is the problem. &amp;ldquo;Array&amp;rdquo; imports an expectation of contiguous memory, constant time indexing by arithmetic, fixed-size slots and fixed length, and JavaScript never promised any of the four. What the language defines is an object whose integer-looking string keys get special treatment and whose &lt;code>length&lt;/code> maintains itself.&lt;/p>
+&lt;p>That the thing usually behaves like an array anyway is the work of the engine, not the language, and the engine does it conditionally. Every quirk in sections 3 through 6 is not a wart on an array. It is the object showing through, which is what was there the whole time.&lt;/p>
+&lt;p>The practical value of knowing this is not micro-optimisation. It is that the behaviours stop being surprises. A hole resolving through the prototype chain, a &lt;code>length&lt;/code> that disagrees with &lt;code>Object.keys&lt;/code>, an index that quietly becomes a property, a fiftyfold slowdown with no visible cause: none of those are anomalies to memorise once you know you are holding an object that is pretending, competently and conditionally, to be an array.&lt;/p>
+&lt;h2 id="12-references">12. References
+&lt;/h2>&lt;ul>
+&lt;li>&lt;a class="link" href="https://tc39.es/ecma262/#sec-array-exotic-objects" target="_blank" rel="noopener"
+>ECMAScript specification: Array Exotic Objects&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" target="_blank" rel="noopener"
+>MDN: Array&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://v8.dev/blog/elements-kinds" target="_blank" rel="noopener"
+>V8 blog: elements kinds in V8&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray" target="_blank" rel="noopener"
+>MDN: TypedArray&lt;/a>&lt;/li>
+&lt;/ul></description></item><item><title>I Turned On Caching to Save Money. It Cost Me More.</title><link>https://arthcruz.dev/en/posts/i-turned-on-caching-to-save-money-it-cost-me-more/</link><pubDate>Tue, 29 Sep 2026 00:00:00 +0000</pubDate><guid>https://arthcruz.dev/en/posts/i-turned-on-caching-to-save-money-it-cost-me-more/</guid><description>&lt;img src="https://arthcruz.dev/en/posts/i-turned-on-caching-to-save-money-it-cost-me-more/images/poster.png" alt="Featured image of post I Turned On Caching to Save Money. It Cost Me More." />&lt;h2 id="1-the-number-and-why-the-number-is-not-the-point">1. The number, and why the number is not the point
 &lt;/h2>&lt;p>Over 11 and 12 August 2026, my Vertex AI bill went up by R$252, roughly US$45 at the exchange rate I use for costing. Written like that, it sounds like nothing. Here is the part that matters: the product was a pre-revenue MVP with a handful of people testing it by hand, and that was 48 hours. Essentially nobody was using it.&lt;/p>
 &lt;p>What made it worth chasing was not the size of the number, it was that the number had come unhooked from usage. A bill that tracks traffic is the reassuring case: with almost nobody using the product it stays near zero, and anything that moves it has a cause you can point at. This one was climbing while essentially nobody was using the product. Something was charging me on its own schedule rather than on mine, and since I did not know what, I had no way of knowing where it stopped.&lt;/p>
 &lt;p>The cause turned out to be a cache. Specifically, one I had switched on to test an idea, that passed the test, and that I then forgot was still running.&lt;/p>
